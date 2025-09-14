@@ -3,11 +3,7 @@
   <div class="kiosk-container">
     <div class="header">
       <div class="logo">
-        <img src="https://i.imgur.com/P4Q2S6A.png" alt="Logo" />
-        <div class="title">
-          <p>竹山秀傳醫療社團法人</p>
-          <p>竹山秀傳醫院</p>
-        </div>
+        <img src="https://i.ibb.co/zVc5QbLm/logo2.png" alt="Logo" />
       </div>
       <div class="date-time">{{ currentTime }}</div>
     </div>
@@ -19,45 +15,55 @@
           <p class="subtitle">請先點選服務項目按鈕</p>
         </div>
         <div class="button-stack">
-          <div class="button white">
+          <div class="button color1">
             <div class="button-content">
               <div class="button-title">慢箋領藥</div>
               <div class="button-subtitle">Refilling a Prescription</div>
             </div>
-            <img src="https://img.88icon.com/download/jpg/20200821/b19eca3bcf7ef82cf953d17723f377d1_512_512.jpg!bg" alt="慢箋領藥" />
+            <div class="button-icon-wrapper">
+              <img src="https://img.88icon.com/download/jpg/20200821/b19eca3bcf7ef82cf953d17723f377d1_512_512.jpg!bg" alt="慢箋領藥" />
+            </div>
           </div>
-          <div class="button blue">
+          <div class="button color2">
             <div class="button-content">
               <div class="button-title">收據補印</div>
               <div class="button-subtitle">Reissue receipt</div>
             </div>
-            <img src="https://cdn-icons-png.freepik.com/512/4587/4587583.png" alt="收據補印" />
+            <div class="button-icon-wrapper">
+              <img src="https://cdn-icons-png.freepik.com/512/4587/4587583.png" alt="收據補印" />
+            </div>
           </div>
         </div>
       </div>
 
       <div class="right-column">
         <div class="button-stack">
-          <div class="button yellow">
+          <div class="button color3">
             <div class="button-content">
               <div class="button-title">批價繳費</div>
               <div class="button-subtitle">Pay Medical expenses</div>
             </div>
-            <img src="https://media.istockphoto.com/id/1042581782/zh/%E5%90%91%E9%87%8F/%E4%BB%98%E6%AC%BE%E5%96%AE%E6%93%9A%E9%A0%81%E7%9A%84%E7%99%BC%E7%A5%A8%E6%88%96%E5%B8%B3%E5%96%AE%E5%90%91%E9%87%8F%E5%9C%96%E7%A4%BA.jpg?s=612x612&w=0&k=20&c=j20I-YxMpVs5uVfWgzNfm1rrTg0Dz864TbrZcHsI4MA=" alt="批價繳費" />
+            <div class="button-icon-wrapper">
+              <img src="https://media.istockphoto.com/id/1042581782/zh/%E5%90%91%E9%87%8F/%E4%BB%98%E6%AC%BE%E5%96%AE%E6%93%9A%E9%A0%81%E7%9A%84%E7%99%BC%E7%A5%A8%E6%88%96%E5%B8%B3%E5%96%AE%E5%90%91%E9%87%8F%E5%9C%96%E7%A4%BA.jpg?s=612x612&w=0&k=20&c=j20I-YxMpVs5uVfWgzNfm1rrTg0Dz864TbrZcHsI4MA=" alt="批價繳費" />
+            </div>
           </div>
-          <div class="button white">
+          <div class="button color4">
             <div class="button-content">
-              <div class="button-title">復健同一療程繳費</div>
+              <div class="button-title">復健同療</div>
               <div class="button-subtitle">Pay therapy sessionfee</div>
             </div>
-            <img src="https://www.shutterstock.com/image-vector/back-pain-treatment-logo-design-260nw-2056533320.jpg" alt="復健同一療程繳費" />
+            <div class="button-icon-wrapper">
+              <img src="https://www.shutterstock.com/image-vector/back-pain-treatment-logo-design-260nw-2056533320.jpg" alt="復健同療" />
+            </div>
           </div>
-          <div class="button white">
+          <div class="button color5">
             <div class="button-content">
               <div class="button-title">預約掛號</div>
               <div class="button-subtitle">Make an appointment</div>
             </div>
-            <img src="https://img.88icon.com/download/jpg/20201201/57c49dbff67a63bb490263d91a36b82e_512_512.jpg!bg" alt="預約掛號" />
+            <div class="button-icon-wrapper">
+              <img src="https://img.88icon.com/download/jpg/20201201/57c49dbff67a63bb490263d91a36b82e_512_512.jpg!bg" alt="預約掛號" />
+            </div>
           </div>
         </div>
       </div>
@@ -97,25 +103,12 @@ onUnmounted(() => {
   width: 100vw;
   height: 100vh;
   font-family: "Microsoft JhengHei", sans-serif;
-  background-color: #e6f0eb; /* Soft green-grey background */
-  position: relative;
-  overflow: hidden;
-}
-
-.kiosk-container::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 75%;
-  height: 75%;
-  transform: translate(-50%, -50%);
-  background-image: url('https://lh3.googleusercontent.com/p/AF1QipPLcMIVjWHOJJK6inMMRrMM-0MMo8zD9w5OIbo7=s1360-w1360-h1020-rw');
-  background-size: contain;
+  background-image: url('https://i.ibb.co/mFCgrF50/image.png');
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.15;
-  z-index: 1;
+  position: relative;
+  overflow: hidden;
 }
 
 .header {
@@ -130,18 +123,12 @@ onUnmounted(() => {
 .logo {
   display: flex;
   align-items: center;
+  margin-left: 1cm; /* Move the logo to the right */
 }
 
 .logo img {
-  height: 50px;
+  height: 72px; /* Increased the height by 20% */
   margin-right: 15px;
-}
-
-.title p {
-  margin: 0;
-  font-weight: bold;
-  font-size: 1.2em;
-  color: #333;
 }
 
 .date-time {
@@ -212,9 +199,11 @@ onUnmounted(() => {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-.button.white { background-color: #fcfdff; }
-.button.blue { background-color: #e0f7fa; }
-.button.yellow { background-color: #fffde7; }
+.button.color1 { background-color: #e9f5ff; } /* Light Blue */
+.button.color2 { background-color: #e0f8f0; } /* Light Green */
+.button.color3 { background-color: #fff8e1; } /* Light Yellow */
+.button.color4 { background-color: #f3e5f5; } /* Light Purple */
+.button.color5 { background-color: #ffebee; } /* Light Red */
 
 .button-content {
   text-align: left;
@@ -232,11 +221,19 @@ onUnmounted(() => {
   margin-top: 8px;
 }
 
+.button .button-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .button img {
-  height: 90%;
-  max-width: 150px;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   border-radius: 8px;
 }
-
 </style>
