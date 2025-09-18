@@ -1,9 +1,8 @@
-
 <template>
   <div class="kiosk-container">
     <div class="header">
       <div class="logo">
-        <img src="https://i.ibb.co/zVc5QbLm/logo2.png" alt="Logo" />
+        <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" />
       </div>
       <div class="date-time">{{ currentTime }}</div>
     </div>
@@ -15,7 +14,7 @@
           <p class="subtitle">請先點選服務項目按鈕</p>
         </div>
         <div class="button-stack">
-          <div class="button color1">
+          <div class="button color1" @click="emit('go-home')">
             <div class="button-content">
               <div class="button-title">慢箋領藥</div>
               <div class="button-subtitle">Refilling a Prescription</div>
@@ -24,7 +23,7 @@
               <img src="https://img.88icon.com/download/jpg/20200821/b19eca3bcf7ef82cf953d17723f377d1_512_512.jpg!bg" alt="慢箋領藥" />
             </div>
           </div>
-          <div class="button color2">
+          <div class="button color2" @click="emit('go-home')">
             <div class="button-content">
               <div class="button-title">收據補印</div>
               <div class="button-subtitle">Reissue receipt</div>
@@ -38,7 +37,7 @@
 
       <div class="right-column">
         <div class="button-stack">
-          <div class="button color3">
+          <div class="button color3" @click="startPayment">
             <div class="button-content">
               <div class="button-title">批價繳費</div>
               <div class="button-subtitle">Pay Medical expenses</div>
@@ -47,7 +46,7 @@
               <img src="https://media.istockphoto.com/id/1042581782/zh/%E5%90%91%E9%87%8F/%E4%BB%98%E6%AC%BE%E5%96%AE%E6%93%9A%E9%A0%81%E7%9A%84%E7%99%BC%E7%A5%A8%E6%88%96%E5%B8%B3%E5%96%AE%E5%90%91%E9%87%8F%E5%9C%96%E7%A4%BA.jpg?s=612x612&w=0&k=20&c=j20I-YxMpVs5uVfWgzNfm1rrTg0Dz864TbrZcHsI4MA=" alt="批價繳費" />
             </div>
           </div>
-          <div class="button color4">
+          <div class="button color4" @click="emit('go-home')">
             <div class="button-content">
               <div class="button-title">復健同療</div>
               <div class="button-subtitle">Pay therapy sessionfee</div>
@@ -56,7 +55,7 @@
               <img src="https://www.shutterstock.com/image-vector/back-pain-treatment-logo-design-260nw-2056533320.jpg" alt="復健同療" />
             </div>
           </div>
-          <div class="button color5">
+          <div class="button color5" @click="emit('go-home')">
             <div class="button-content">
               <div class="button-title">預約掛號</div>
               <div class="button-subtitle">Make an appointment</div>
@@ -74,7 +73,13 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 
+const emit = defineEmits(['start-payment', 'go-home']);
+
 const currentTime = ref("");
+
+const startPayment = () => {
+  emit('start-payment');
+};
 
 const updateTime = () => {
   const now = new Date();
@@ -103,7 +108,7 @@ onUnmounted(() => {
   width: 100vw;
   height: 100vh;
   font-family: "Microsoft JhengHei", sans-serif;
-  background-image: url('https://i.ibb.co/mFCgrF50/image.png');
+  background-image: url('https://i.ibb.co/Kc1mq3ZK/a901b86c-34ce-4727-8160-2149c5611b5c-processed-lightpdf-com.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -123,12 +128,11 @@ onUnmounted(() => {
 .logo {
   display: flex;
   align-items: center;
-  margin-left: 1cm; /* Move the logo to the right */
+  margin-left: 1cm;
 }
 
 .logo img {
-  height: 72px; /* Increased the height by 20% */
-  margin-right: 15px;
+  height: 72px;
 }
 
 .date-time {
@@ -142,10 +146,10 @@ onUnmounted(() => {
   z-index: 2;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Align columns to the top */
+  align-items: flex-start;
   gap: 40px;
   padding: 2vh 40px;
-  height: calc(100vh - 90px); /* Adjust based on header height */
+  height: calc(100vh - 90px);
 }
 
 .left-column, .right-column {
@@ -199,11 +203,11 @@ onUnmounted(() => {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-.button.color1 { background-color: #e9f5ff; } /* Light Blue */
-.button.color2 { background-color: #e0f8f0; } /* Light Green */
-.button.color3 { background-color: #fff8e1; } /* Light Yellow */
-.button.color4 { background-color: #f3e5f5; } /* Light Purple */
-.button.color5 { background-color: #ffebee; } /* Light Red */
+.button.color1 { background-color: #e9f5ff; }
+.button.color2 { background-color: #e0f8f0; }
+.button.color3 { background-color: #fff8e1; }
+.button.color4 { background-color: #f3e5f5; }
+.button.color5 { background-color: #ffebee; }
 
 .button-content {
   text-align: left;
