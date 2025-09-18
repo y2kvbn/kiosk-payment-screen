@@ -54,14 +54,26 @@
             <span class="col-clinic">外科</span>
             <span class="col-amount">540</span>
           </div>
-          <div class="bill-row empty"><span>&nbsp;</span></div>
-          <div class="bill-row empty"><span>&nbsp;</span></div>
+          <div class="bill-row">
+            <span class="col-date">2025/09/11</span>
+            <span class="col-name">王曉明</span>
+            <span class="col-mrn">984751</span>
+            <span class="col-clinic">耳鼻喉科</span>
+            <span class="col-amount">670</span>
+          </div>
+          <div class="bill-row">
+            <span class="col-date">2025/09/11</span>
+            <span class="col-name">王大明</span>
+            <span class="col-mrn">257411</span>
+            <span class="col-clinic">眼科</span>
+            <span class="col-amount">700</span>
+          </div>
           <div class="bill-row empty"><span>&nbsp;</span></div>
           <div class="bill-row empty"><span>&nbsp;</span></div>
         </div>
         <div class="bill-footer">
           <span>合計金額 Total expense</span>
-          <span class="total-value">880</span>
+          <span class="total-value">2250</span>
         </div>
       </div>
 

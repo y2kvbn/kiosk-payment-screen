@@ -4,7 +4,8 @@
     <KioskPage v-else-if="currentPage === 'kiosk'" @start-payment="setCurrentPage('scanBarcode')" @go-home="setCurrentPage('welcome')" />
     <ScanBarcodePage v-else-if="currentPage === 'scanBarcode'" @scan-complete="setCurrentPage('insertCard')" @go-home="setCurrentPage('kiosk')" />
     <InsertCardPage v-else-if="currentPage === 'insertCard'" @card-inserted="setCurrentPage('readingCard')" @go-home="setCurrentPage('kiosk')" />
-    <ReadingCardPage v-else-if="currentPage === 'readingCard'" @card-read-success="setCurrentPage('paymentDetails')" @go-home="setCurrentPage('kiosk')" />
+    <ReadingCardPage v-else-if="currentPage === 'readingCard'" @card-read-success="setCurrentPage('cardProcessed')" @go-home="setCurrentPage('kiosk')" />
+    <CardProcessedPage v-else-if="currentPage === 'cardProcessed'" @card-removed="setCurrentPage('paymentDetails')" />
     <PaymentDetailsPage v-else-if="currentPage === 'paymentDetails'" @confirm-payment="handlePayment" @go-home="setCurrentPage('kiosk')" />
     <PaymentPage v-else-if="currentPage === 'payment'" :payment-method="paymentMethod" @payment-success="setCurrentPage('cardSuccess')" @go-home="setCurrentPage('kiosk')" @go-back="setCurrentPage('paymentDetails')" />
     <CardSuccessPage v-else-if="currentPage === 'cardSuccess'" @go-home="setCurrentPage('welcome')" />
@@ -18,6 +19,7 @@ import KioskPage from './components/KioskPage.vue';
 import ScanBarcodePage from './components/ScanBarcodePage.vue';
 import InsertCardPage from './components/InsertCardPage.vue';
 import ReadingCardPage from './components/ReadingCardPage.vue';
+import CardProcessedPage from './components/CardProcessedPage.vue'; // Import the new component
 import PaymentDetailsPage from './components/PaymentDetailsPage.vue';
 import PaymentPage from './components/PaymentPage.vue';
 import CardSuccessPage from './components/CardSuccessPage.vue';

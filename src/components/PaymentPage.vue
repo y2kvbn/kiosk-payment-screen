@@ -105,7 +105,7 @@ const emit = defineEmits(['payment-success', 'go-home', 'go-back']);
 const countdown = ref(118);
 const totalAmount = 2250;
 const amountPaid = ref(0);
-const change = computed(() => amountPaid.value > totalAmount ? amountPaid.value - totalAmount : 0);
+const change = computed(() => amountPaid.value >= totalAmount ? amountPaid.value - totalAmount : 0);
 
 const goHome = () => {
   emit('go-home');
@@ -116,9 +116,9 @@ const goBack = () => {
 };
 
 let countdownTimer;
-let paymentTimer;
 
 onMounted(() => {
+  // Start countdown timer
   countdownTimer = setInterval(() => {
     if (countdown.value > 0) {
       countdown.value--;
@@ -127,20 +127,17 @@ onMounted(() => {
     }
   }, 1000);
 
-  // Simulate cash insertion
-  paymentTimer = setInterval(() => {
-    if (amountPaid.value < totalAmount) {
-        amountPaid.value += 50; // Simulate inserting 50
-    } else {
-        clearInterval(paymentTimer);
-        setTimeout(() => emit('payment-success'), 1500); // Wait a bit then move to success page
-    }
-  }, 200);
+  // Set inserted amount to 3000 immediately
+  amountPaid.value = 3000;
+
+  // After 2 seconds, emit payment success event
+  setTimeout(() => {
+    emit('payment-success');
+  }, 2000); // 2000ms = 2 seconds
 });
 
 onUnmounted(() => {
   clearInterval(countdownTimer);
-  clearInterval(paymentTimer);
 });
 
 </script>

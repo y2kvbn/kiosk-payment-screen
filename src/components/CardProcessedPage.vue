@@ -1,11 +1,9 @@
+
 <template>
   <div class="page-container">
     <header class="header">
       <div class="logo-container">
         <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" class="logo-img">
-      </div>
-      <div class="countdown-container">
-        自動回首頁：<span class="seconds">{{ countdown }}</span>
       </div>
     </header>
 
@@ -18,50 +16,32 @@
     </div>
 
     <main class="main-content">
-      <div class="card-insertion-box">
+      <div class="card-processed-box">
         <img 
           src="https://i.ibb.co/pvDHXq5r/Chat-GPT-Image-2025-9-18-03-49-32-Photoroom.png" 
           alt="Health Insurance Card" 
-          class="health-card-img" 
-          @click="handleCardInsert">
-        <h2 class="instruction-text">請插入健保卡</h2>
-        <p class="instruction-subtext">Please Insert health insurance card</p>
+          class="health-card-img">
+        <h2 class="instruction-text">過卡完成,請抽出健保卡</h2>
+        <p class="instruction-subtext">Health insurance card progressing is Finished Please draw out health insurance card</p>
       </div>
     </main>
 
     <footer class="footer">
-      <button class="back-button" @click="goHome">← 回首頁</button>
+      <!-- This footer is intentionally empty to maintain layout consistency -->
     </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { onMounted, defineEmits } from 'vue';
 
-const emit = defineEmits(['card-inserted', 'go-home']);
-const countdown = ref(30);
+const emit = defineEmits(['card-removed']);
 
-const handleCardInsert = () => {
-  emit('card-inserted');
-};
-
-const goHome = () => {
-  emit('go-home');
-};
-
-let countdownTimer;
+// Automatically transition to the next page after 3 seconds
 onMounted(() => {
-  countdownTimer = setInterval(() => {
-    if (countdown.value > 0) {
-      countdown.value--;
-    } else {
-      goHome();
-    }
-  }, 1000);
-});
-
-onUnmounted(() => {
-  clearInterval(countdownTimer);
+  setTimeout(() => {
+    emit('card-removed');
+  }, 3000);
 });
 </script>
 
@@ -91,19 +71,6 @@ onUnmounted(() => {
 
 .logo-img {
   height: 45px;
-}
-
-.countdown-container {
-  background-color: #333;
-  color: #fff;
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-size: 1.5rem;
-}
-
-.seconds {
-  color: #ffeb3b;
-  font-weight: bold;
 }
 
 .info-bar {
@@ -137,7 +104,7 @@ onUnmounted(() => {
   padding: 20px;
 }
 
-.card-insertion-box {
+.card-processed-box {
   background-color: #fff;
   border-radius: 20px;
   padding: 50px 100px;
@@ -147,14 +114,8 @@ onUnmounted(() => {
 
 .health-card-img {
   max-width: 400px;
-  cursor: pointer;
   margin-bottom: 20px;
   border-radius: 15px;
-  transition: transform 0.3s ease;
-}
-
-.health-card-img:hover {
-    transform: scale(1.05);
 }
 
 .instruction-text {
@@ -170,24 +131,7 @@ onUnmounted(() => {
 }
 
 .footer {
-  padding: 20px 40px;
+  padding: 65px; /* Adjust padding to match other footers */
   background-color: #f0f4f8;
-  text-align: right;
-}
-
-.back-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 15px 40px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.back-button:hover {
-  background-color: #0056b3;
 }
 </style>

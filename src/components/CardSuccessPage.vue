@@ -19,7 +19,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 
 const emit = defineEmits(['go-home']);
-const countdown = ref(10);
+const countdown = ref(3); // Changed countdown to 3 seconds
 let countdownTimer;
 
 const goHome = () => {
