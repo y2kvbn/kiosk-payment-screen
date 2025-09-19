@@ -49,7 +49,7 @@
           </div>
           <div class="bill-row">
             <span class="col-date">2025/09/10</span>
-            <span class="col-name">王大明</span>
+            <span class="col-name">王曉明</span>
             <span class="col-mrn">257411</span>
             <span class="col-clinic">外科</span>
             <span class="col-amount">540</span>
@@ -69,7 +69,7 @@
         <div class="amounts-section">
           <div class="amount-row">
             <span class="amount-label">應繳金額 <span class="sub-label">AMOUNT PAYABLE</span></span>
-            <span class="amount-value payable">2,250</span>
+            <span class="amount-value payable">880</span>
           </div>
           <div class="amount-row">
             <span class="amount-label">投入金額 <span class="sub-label">AMOUNT PAID</span></span>
@@ -81,7 +81,7 @@
           </div>
         </div>
         <div class="cash-machine-area">
-            <img src="https://i.imgur.com/3SoQlL9.png" alt="Cash machine" class="cash-machine-img">
+            <img src="https://i.ibb.co/tTwXvTHs/Cash-Paying.gif" alt="Cash machine" class="cash-machine-img">
         </div>
          <div class="instruction-prompt">
           請投入紙鈔或硬幣
@@ -89,8 +89,11 @@
           <span class="en-prompt">Please put in cash</span>
         </div>
         <div class="action-buttons">
-            <button class="btn btn-cancel" @click="goHome">❌ 取消繳費 <span class="btn-subtitle">CANCEL</span></button>
-            <button class="btn btn-credit-alt" @click="goBack">💳 信用卡 <span class="btn-subtitle">CREDIT CARD</span></button>
+          <button class="btn btn-cancel" @click="goHome">❌ 取消繳費 <span class="btn-subtitle">CANCEL</span></button>
+          <button class="btn btn-credit-alt" @click="goBack">
+            <img src="https://i.ibb.co/qj1pDq2/credit-card.png" alt="Credit Card" class="btn-icon">
+            信用卡 <span class="btn-subtitle">CREDIT CARD</span>
+          </button>
         </div>
       </div>
     </main>
@@ -103,7 +106,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 const emit = defineEmits(['payment-success', 'go-home', 'go-back']);
 
 const countdown = ref(118);
-const totalAmount = 2250;
+const totalAmount = 880;
 const amountPaid = ref(0);
 const change = computed(() => amountPaid.value >= totalAmount ? amountPaid.value - totalAmount : 0);
 
@@ -130,10 +133,10 @@ onMounted(() => {
   // Set inserted amount to 3000 immediately
   amountPaid.value = 3000;
 
-  // After 2 seconds, emit payment success event
+  // After 3 seconds, emit payment success event
   setTimeout(() => {
     emit('payment-success');
-  }, 2000); // 2000ms = 2 seconds
+  }, 3000);
 });
 
 onUnmounted(() => {
@@ -281,8 +284,10 @@ onUnmounted(() => {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   border-radius: 8px;
+  overflow: hidden;
+  gap: 10px;
 }
 
 /* Bill details panel styles - copied */
@@ -365,11 +370,11 @@ onUnmounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 15px 0;
 }
 
 .cash-machine-img {
-    max-width: 80%;
+    max-width: 65%;
+    max-height: 200px;
     height: auto;
     border-radius: 10px;
 }
@@ -379,7 +384,6 @@ onUnmounted(() => {
   font-size: 1.8rem;
   font-weight: bold;
   color: #d9534f;
-  margin: 15px 0;
 }
 
 .en-prompt {
@@ -403,6 +407,11 @@ onUnmounted(() => {
     font-size: 1.5rem;
     font-weight: bold;
     transition: all 0.3s ease;
+}
+
+.btn-icon {
+  height: 1.6rem;
+  margin-right: 10px;
 }
 
 .btn-subtitle {

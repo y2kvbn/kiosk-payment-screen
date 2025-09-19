@@ -1,19 +1,44 @@
 <template>
-  <div class="container">
+  <div class="page-container">
     <header class="header">
-      <div class="logo">
-        <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo">
+      <div class="logo-container">
+        <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" class="logo-img">
       </div>
-      <div class="current-time">{{ currentTime }}</div>
+      <div class="countdown-container">
+        剩餘秒數：<span class="seconds">{{ countdown }}</span>
+      </div>
     </header>
-    <div class="page-view">
-      <div class="reading-content">
-        <div class="spinner"></div>
-        <h1 class="main-message">健保卡過卡中，請稍後！</h1>
-        <h2 class="sub-message">請勿抽出健保卡。</h2>
-        <button class="home-button" @click="goHome">回首頁</button>
+
+    <div class="progress-bar-container">
+      <div class="step-wrapper">
+        <div class="step">
+          <span class="step-number-inactive">1</span>
+          <div class="step-text-inactive">
+            <div>確認繳費項目</div>
+            <div class="step-subtitle">PAYMENT INFORMATION</div>
+          </div>
+        </div>
+        <div class="step-arrow"></div>
+        <div class="step active">
+          <span class="step-number">2</span>
+          <div class="step-text">
+            <div>繳費資訊</div>
+            <div class="step-subtitle">PAYMENT INFORMATION</div>
+          </div>
+        </div>
       </div>
+      <button class="home-button-progress" @click="goHome">🏠 首頁</button>
     </div>
+
+    <main class="main-content">
+      <div class="content-panel">
+        <div class="icon-container">
+          <div class="loader"></div>
+        </div>
+        <h1 class="status-text">讀取卡片中，請稍候...</h1>
+        <p class="status-subtitle">Reading card, please wait...</p>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -22,100 +47,170 @@ import { ref, onMounted, onUnmounted } from 'vue';
 
 const emit = defineEmits(['card-read-success', 'go-home']);
 
-// For the clock
-const currentTime = ref('');
-const updateTime = () => {
-  const now = new Date();
-  currentTime.value = now.toLocaleTimeString('zh-TW', { hour12: false });
-};
-let timer;
+const countdown = ref(118);
 
-// For the card reading simulation
-let successTimer;
+const goHome = () => {
+  emit('go-home');
+};
+
+let countdownTimer;
+let navigationTimer;
 
 onMounted(() => {
-  // Clock logic
-  updateTime();
-  timer = setInterval(updateTime, 1000);
+  // Start countdown timer
+  countdownTimer = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--;
+    } else {
+      goHome();
+    }
+  }, 1000);
 
-  // Card reading logic
-  successTimer = setTimeout(() => {
+  // Simulate card reading for 3 seconds
+  navigationTimer = setTimeout(() => {
     emit('card-read-success');
   }, 3000);
 });
 
 onUnmounted(() => {
-  // Clock logic
-  clearInterval(timer);
-  // Card reading logic
-  clearTimeout(successTimer);
+  clearInterval(countdownTimer);
+  clearTimeout(navigationTimer);
 });
 
-const goHome = () => {
-  emit('go-home');
-};
 </script>
 
 <style scoped>
-.container {
+/* Using similar styles from other pages for consistency */
+.page-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f0f4f8;
+  width: 100%;
+  background-color: #e8e8e8;
+  font-family: 'Microsoft JhengHei', sans-serif;
+  overflow: hidden;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 10px 30px;
+  background-color: #fff;
   flex-shrink: 0;
 }
 
-.logo {
+.logo-img {
+  height: 45px;
+}
+
+.countdown-container {
+  background-color: #333;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 1.5rem;
+}
+
+.seconds {
+  color: #ffeb3b;
+  font-weight: bold;
+}
+
+.progress-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #62a691;
+  padding: 0 30px;
+}
+
+.step-wrapper {
   display: flex;
   align-items: center;
 }
 
-.logo img {
-  height: 60px;
+.step, .step.active {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding: 15px 0;
 }
 
-.current-time {
-  font-size: 1.5rem;
+.step-number-inactive, .step-number {
+  font-size: 3rem;
   font-weight: bold;
-  color: #333;
+  margin-right: 15px;
 }
 
-.page-view {
+.step-number-inactive { opacity: 0.7; }
+.step-text, .step-text-inactive {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.7rem;
+}
+
+.step-text { font-weight: bold; }
+.step-text-inactive { font-weight: normal; }
+
+.step-subtitle {
+  font-size: 0.9rem;
+  font-weight: normal;
+}
+
+.step-arrow {
+  width: 0; 
+  height: 0; 
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
+  border-left: 25px solid #62a691;
+  margin: 0 30px;
+}
+
+.home-button-progress {
+  background-color: #4a82a0;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 25px;
+  padding: 8px 25px;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.main-content {
+  flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
+  padding: 20px;
+}
+
+.content-panel {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 60px 100px;
   text-align: center;
+  max-width: 800px;
+  width: 100%;
 }
 
-.reading-content {
-  background-color: #ffffff;
-  border-radius: 20px;
-  padding: 8vh 8vw;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+.icon-container {
+  margin-bottom: 30px;
+  height: 120px;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  transform: scale(0.9);
 }
 
-.spinner {
+.loader {
   border: 16px solid #f3f3f3; /* Light grey */
   border-top: 16px solid #3498db; /* Blue */
   border-radius: 50%;
   width: 120px;
   height: 120px;
   animation: spin 2s linear infinite;
-  margin-bottom: 40px;
+  margin: 0 auto; /* Center the loader */
 }
 
 @keyframes spin {
@@ -123,36 +218,15 @@ const goHome = () => {
   100% { transform: rotate(360deg); }
 }
 
-.main-message {
-  font-size: 4.5rem;
+.status-text {
+  font-size: 2.8rem;
+  font-weight: bold;
   color: #333;
-  font-weight: bold;
-  margin: 0;
+  margin-bottom: 10px;
 }
 
-.sub-message {
-  font-size: 3rem;
-  color: #007bff;
-  font-weight: bold;
-  margin-top: 2rem;
-  margin-bottom: 3rem;
-}
-
-.home-button {
-  border: none;
-  border-radius: 15px;
-  padding: 20px 60px;
-  font-size: 2rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  background-color: #a7d8de;
-  color: #333;
-}
-
-.home-button:hover {
-  background-color: #8ac6cf;
-  transform: translateY(-3px);
+.status-subtitle {
+  font-size: 1.5rem;
+  color: #666;
 }
 </style>

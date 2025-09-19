@@ -10,7 +10,7 @@
     <main class="main-content">
       <h1 class="title">請將批價單或收據上的條碼對準下方的掃描器</h1>
       <div class="scanner-area">
-        <img src="https://media.istockphoto.com/id/173563308/zh/%E7%85%A7%E7%89%87/bar-code.webp?s=1024x1024&w=is&k=20&c=qdvPgxyYaCgBF7LdU_IBVhk_4W1L_lb8ir827CsS0ZA=" alt="Barcode" class="scanner-gif" @click="handleScan">
+        <img src="https://i.ibb.co/PG99ZD41/2025-09-18-181533.png" alt="Barcode" class="scanner-gif" @click="handleScan">
         <div class="scanner-line"></div>
       </div>
       <p class="instruction">請將手機或紙本條碼對準掃描器</p>
