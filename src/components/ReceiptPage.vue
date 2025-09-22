@@ -319,20 +319,87 @@ const goBack = () => {
 
 @media print {
   @page {
-    size: A5 landscape;
-    margin: 10mm;
+    size: A5 portrait;
+    margin: 5mm;
   }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
   .toolbar {
     display: none;
   }
+
   .receipt-container {
     padding: 0;
   }
+
   .receipt-content {
-    border: none;
+    border: 1px solid #000;
+    padding: 10px;
+    font-size: 8pt;
+    color: #000;
   }
+
+  .header {
+    margin-bottom: 10px;
+  }
+  .hospital-name {
+    font-size: 14pt;
+  }
+  .receipt-title {
+    font-size: 11pt;
+  }
+  .receipt-subtitle {
+    font-size: 9pt;
+  }
+
+  .patient-info {
+    border-width: 1px;
+    padding: 5px 0;
+    margin-bottom: 10px;
+    font-size: 8pt;
+  }
+  .info-row {
+      margin-bottom: 2px;
+  }
+
+  .billing-details table {
+    font-size: 8pt;
+    margin-bottom: 10px;
+  }
+  .billing-details th, .billing-details td {
+    padding: 2px;
+    border: 1px solid #000;
+  }
+
   .stamp-overlay {
+      bottom: 10px;
       opacity: 0.1;
+  }
+  .stamp {
+      font-size: 9pt;
+      padding: 8px;
+      width: 90px;
+      height: 90px;
+      border-width: 2px;
+  }
+
+  .summary {
+    padding-top: 5px;
+    font-size: 8pt;
+  }
+  
+  .summary-row {
+      margin-bottom: 4px;
+  }
+
+  .footer {
+    padding-top: 5px;
+    margin-top: 10px;
+    font-size: 7pt;
   }
 }
 

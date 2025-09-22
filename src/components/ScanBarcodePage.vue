@@ -19,7 +19,7 @@
     <footer class="footer">
       <button class="back-button" @click="goHome">回首頁</button>
     </footer>
-    <audio ref="audioPlayer" src="https://s17.aconvert.com/convert/p3r68-cdx67/v75w2-01ham.mp3" autoplay></audio>
+    <audio ref="audioPlayer" src="https://s17.aconvert.com/convert/p3r68-cdx67/c1o3v-7xgou.mp3" autoplay></audio>
   </div>
 </template>
 
@@ -40,8 +40,12 @@ let timer;
 onMounted(() => {
   updateTime();
   timer = setInterval(updateTime, 1000);
+  // Try to play the audio, might be blocked by browser policy
   if (audioPlayer.value) {
-    audioPlayer.value.play();
+    audioPlayer.value.play().catch(error => {
+      console.log("Audio play was prevented: ", error);
+      // You might want to show a button to the user to start the audio manually
+    });
   }
 });
 
