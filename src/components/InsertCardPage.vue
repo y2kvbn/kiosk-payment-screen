@@ -3,6 +3,7 @@
     <header class="header">
       <div class="logo-container">
         <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" class="logo-img">
+        <span class="logo-text">臺安醫院雙十分院 <br> Tai-An Hospital Shuang Shi Branch</span>
       </div>
       <div class="countdown-container">
         自動回首頁：<span class="seconds">{{ countdown }}</span>
@@ -10,7 +11,7 @@
     </header>
 
     <div class="info-bar">
-        <span class="info-icon">💳</span>
+        <span class="info-icon">👤</span>
         <div class="info-text">
             <div class="info-title">健保卡資訊</div>
             <div class="info-subtitle">Health insurance card information</div>
@@ -28,29 +29,31 @@
         <p class="instruction-subtext">Please Insert health insurance card</p>
       </div>
     </main>
-
-    <footer class="footer">
-      <button class="back-button" @click="goHome">← 回首頁</button>
-    </footer>
+    <audio ref="audioPlayer" src="https://s33.aconvert.com/convert/p3r68-cdx67/uzv0u-bi2zu.mp3" autoplay></audio>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['card-inserted', 'go-home']);
+const router = useRouter();
 const countdown = ref(30);
+const audioPlayer = ref(null);
 
 const handleCardInsert = () => {
-  emit('card-inserted');
+  router.push({ name: 'ReadingCardPage' });
 };
 
 const goHome = () => {
-  emit('go-home');
+  router.push({ name: 'WelcomePage' });
 };
 
 let countdownTimer;
 onMounted(() => {
+  if (audioPlayer.value) {
+    audioPlayer.value.play();
+  }
   countdownTimer = setInterval(() => {
     if (countdown.value > 0) {
       countdown.value--;
@@ -91,6 +94,13 @@ onUnmounted(() => {
 
 .logo-img {
   height: 45px;
+  margin-right: 10px;
+}
+
+.logo-text {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.2;
 }
 
 .countdown-container {
@@ -110,7 +120,7 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     padding: 15px 30px;
-    background-color: #62a691;
+    background-color: #66A390;
     color: #fff;
 }
 
@@ -167,27 +177,5 @@ onUnmounted(() => {
 .instruction-subtext {
   font-size: 1.5rem;
   color: #555;
-}
-
-.footer {
-  padding: 20px 40px;
-  background-color: #f0f4f8;
-  text-align: right;
-}
-
-.back-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 15px 40px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.back-button:hover {
-  background-color: #0056b3;
 }
 </style>

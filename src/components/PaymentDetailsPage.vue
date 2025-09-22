@@ -1,435 +1,332 @@
 <template>
-  <div class="page-container">
-    <header class="header">
-      <div class="logo-container">
-        <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" class="logo-img">
-      </div>
-      <div class="countdown-container">
-        剩餘秒數：<span class="seconds">{{ countdown }}</span>
-      </div>
-    </header>
-
-    <div class="progress-bar-container">
-      <div class="step-wrapper">
-        <div class="step active">
-          <span class="step-number">1</span>
-          <div class="step-text">
-            <div>確認繳費項目</div>
-            <div class="step-subtitle">PAYMENT INFORMATION</div>
+  <div class="payment-details-container">
+    <div class="left-panel">
+      <div class="patient-info-section">
+        <h3>就醫資料 PATIENT INFORMATION</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">病歷號</span>
+            <span class="value">984751</span>
           </div>
-        </div>
-        <div class="step-arrow"></div>
-        <div class="step">
-          <span class="step-number">2</span>
-          <div class="step-text">
-            <div>繳費資訊</div>
-            <div class="step-subtitle">PAYMENT INFORMATION</div>
+          <div class="info-item">
+            <span class="label">姓名</span>
+            <span class="value">王曉明</span>
+          </div>
+          <div class="info-item">
+            <span class="label">看診日期</span>
+            <span class="value">2025/09/10</span>
           </div>
         </div>
       </div>
-      <button class="home-button-progress" @click="goHome">🏠 首頁</button>
+      <div class="cost-summary-section">
+        <h3>費用明細 COST DETAILS</h3>
+        <div class="cost-grid">
+          <div class="cost-item">
+            <span class="label">科別</span>
+            <span class="value">家醫科</span>
+            <span class="amount">340</span>
+          </div>
+          <div class="cost-item">
+            <span class="label">科別</span>
+            <span class="value">外科</span>
+            <span class="amount">540</span>
+          </div>
+          <div class="cost-item">
+            <span class="label">科別</span>
+            <span class="value">放射科</span>
+            <span class="amount">750</span>
+          </div>
+          <div class="cost-item">
+            <span class="label">科別</span>
+            <span class="value">藥劑科</span>
+            <span class="amount">620</span>
+          </div>
+        </div>
+        <div class="total-cost">
+          <span class="label">合計金額</span>
+          <span class="amount">2,250</span>
+        </div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn-prev" @click="goBack">上一步</button>
+      </div>
     </div>
-
-    <main class="main-content">
-      <div class="bill-details-panel">
-        <div class="bill-header">
-          <span class="col-date">日期 Date</span>
-          <span class="col-name">姓名 Name</span>
-          <span class="col-mrn">病歷號 MRN</span>
-          <span class="col-clinic">科別 Clinic</span>
-          <span class="col-amount">應繳金額 Amount Due</span>
+    <div class="right-panel">
+      <!-- Payment Method Selection -->
+      <div v-if="!paymentMethod">
+        <div class="amount-payable-section">
+          <div class="payable-text">
+            <div class="payable-title">應繳金額</div>
+            <div class="payable-subtitle">AMOUNT PAYABLE</div>
+          </div>
+          <div class="payable-amount">2,250</div>
+          <div class="payable-warning">※金額超過3,000元, 僅提供現金繳費<br>Amount exceed 3,000 dollars use cash for payment only</div>
         </div>
-        <div class="bill-rows">
-          <div class="bill-row">
-            <span class="col-date">2025/09/10</span>
-            <span class="col-name">王曉明</span>
-            <span class="col-mrn">984751</span>
-            <span class="col-clinic">家醫科</span>
-            <span class="col-amount">340</span>
+        <div class="select-payment-section">
+          <div class="instruction-text">請確認就醫資料並選擇繳費方式<br>Please confirm your medical information and select a payment method</div>
+          <div class="payment-buttons">
+            <button class="payment-btn cash-btn" @click="selectPaymentMethod('cash')">
+              <span class="btn-icon">💰</span>
+              <div>
+                <div class="btn-title">現金繳費</div>
+                <div class="btn-subtitle">CASH</div>
+              </div>
+            </button>
+            <button class="payment-btn card-btn" @click="selectPaymentMethod('card')">
+              <span class="btn-icon">💳</span>
+              <div>
+                <div class="btn-title">信用卡繳費</div>
+                <div class="btn-subtitle">CREDIT CARD</div>
+              </div>
+            </button>
           </div>
-          <div class="bill-row">
-            <span class="col-date">2025/09/10</span>
-            <span class="col-name">王大明</span>
-            <span class="col-mrn">257411</span>
-            <span class="col-clinic">外科</span>
-            <span class="col-amount">540</span>
-          </div>
-          <div class="bill-row">
-            <span class="col-date">2025/09/11</span>
-            <span class="col-name">王曉明</span>
-            <span class="col-mrn">984751</span>
-            <span class="col-clinic">耳鼻喉科</span>
-            <span class="col-amount">670</span>
-          </div>
-          <div class="bill-row">
-            <span class="col-date">2025/09/11</span>
-            <span class="col-name">王大明</span>
-            <span class="col-mrn">257411</span>
-            <span class="col-clinic">眼科</span>
-            <span class="col-amount">700</span>
-          </div>
-          <div class="bill-row empty"><span>&nbsp;</span></div>
-          <div class="bill-row empty"><span>&nbsp;</span></div>
-        </div>
-        <div class="bill-footer">
-          <span>合計金額 Total expense</span>
-          <span class="total-value">2250</span>
         </div>
       </div>
-
-      <div class="payment-options-panel">
-        <div class="total-payable-section">
-          <div class="total-payable">
-            <div class="payable-text">
-              <div>應繳金額</div>
-              <div class="payable-subtitle">AMOUNT PAYABLE</div>
-            </div>
-            <div class="payable-amount">2,250</div>
-          </div>
-          <div class="cash-notice">
-            ※金額超過3,000元, 僅提供現金繳費
-            <br>
-            <span class="en-notice">Amount exceed 3,000 dollars use cash for payment only</span>
-          </div>
-        </div>
-
-        <div class="selection-prompt">
-          請確認就醫資料並選擇繳費方式
-          <br>
-          <span class="en-prompt">Please confirm your medical information and select a payment method</span>
-        </div>
-        <div class="payment-buttons">
-          <button class="btn btn-cash" @click="confirmPayment('cash')">
-            <span class="icon">$</span>
-            <div class="btn-text">
-              <div>現金繳費</div>
-              <div class="btn-subtitle">Cash</div>
-            </div>
-          </button>
-          <button class="btn btn-credit" @click="confirmPayment('credit')">
-             <img src="https://i.ibb.co/2S3p9t3/credit-card-icon.png" alt="Credit Card" class="icon-img" />
-            <div class="btn-text">
-              <div>信用卡</div>
-              <div class="btn-subtitle">Credit Card</div>
-            </div>
-          </button>
-        </div>
+      <!-- Cash Payment Steps -->
+      <div v-if="paymentMethod === 'cash'">
+        <CashPaymentSteps :steps="cashSteps" :currentStep="currentCashStep" @go-back="paymentMethod = null" />
       </div>
-    </main>
+      <!-- Card Payment Steps -->
+      <div v-if="paymentMethod === 'card'">
+        <CardPaymentSteps :steps="cardSteps" :currentStep="currentCardStep" @go-back="paymentMethod = null" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import CashPaymentSteps from './CashPaymentSteps.vue';
+import CardPaymentSteps from './CardPaymentSteps.vue';
 
-const emit = defineEmits(['confirm-payment', 'go-home']);
-const countdown = ref(118);
+const router = useRouter();
+const paymentMethod = ref(null);
+const currentCashStep = ref(0);
+const currentCardStep = ref(0);
 
-const confirmPayment = (method) => {
-  emit('confirm-payment', method);
+const cashSteps = [
+  { title: '繳費說明', instruction: '為節省您寶貴的時間，本機具僅接受下列面額鈔券，造成不便之處，敬請見諒。' },
+  { title: '現金入口', instruction: '請將現金逐張平整放入，單次最多可放入20張。' },
+  { title: '完成繳費', instruction: '繳費已完成，請取回您的收據。' }
+];
+
+const cardSteps = [
+  { title: '感應信用卡', instruction: '請將信用卡放置於感應區。' },
+  { title: '處理中', instruction: '正在處理您的付款，請稍候...' },
+  { title: '繳費成功', instruction: '交易成功，請取回您的信用卡及收據。' }
+];
+
+const selectPaymentMethod = (method) => {
+  paymentMethod.value = method;
+  if (method === 'cash') {
+    startCashProcess();
+  } else if (method === 'card') {
+    startCardProcess();
+  }
 };
 
-const goHome = () => {
-  emit('go-home');
+const startCashProcess = () => {
+  currentCashStep.value = 1;
+  setTimeout(() => {
+    currentCashStep.value = 2;
+    setTimeout(() => {
+      currentCashStep.value = 3; 
+      setTimeout(() => router.push({ name: 'CardSuccessPage' }), 2000); 
+    }, 3000);
+  }, 3000);
 };
 
-let countdownTimer;
-onMounted(() => {
-  countdownTimer = setInterval(() => {
-    if (countdown.value > 0) {
-      countdown.value--;
-    } else {
-      goHome();
-    }
-  }, 1000);
-});
+const startCardProcess = () => {
+  currentCardStep.value = 1;
+  setTimeout(() => {
+    currentCardStep.value = 2;
+    setTimeout(() => {
+      currentCardStep.value = 3;
+      setTimeout(() => router.push({ name: 'CardSuccessPage' }), 2000);
+    }, 3000);
+  }, 3000);
+};
 
-onUnmounted(() => {
-  clearInterval(countdownTimer);
-});
+const goBack = () => {
+  router.go(-1);
+};
 </script>
 
 <style scoped>
-.page-container {
+.payment-details-container {
   display: flex;
-  flex-direction: column;
   height: 100vh;
-  width: 100%;
-  background-color: #e8e8e8;
+  background-color: #f8f9fa;
   font-family: 'Microsoft JhengHei', sans-serif;
-  overflow: hidden;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 30px;
-  background-color: #fff;
-  flex-shrink: 0;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-}
-
-.logo-img {
-  height: 45px;
-}
-
-.countdown-container {
-  background-color: #333;
-  color: #fff;
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-size: 1.5rem;
-}
-
-.seconds {
-  color: #ffeb3b;
-  font-weight: bold;
-}
-
-.progress-bar-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #62a691;
-  padding: 0 30px;
-}
-
-.step-wrapper {
-  display: flex;
-  align-items: center;
-}
-
-.step {
-  display: flex;
-  align-items: center;
-  color: #fff;
-  padding: 15px 0;
-}
-
-.step.active {
-  font-weight: bold;
-}
-
-.step-number {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-right: 15px;
-  opacity: 0.7;
-}
-
-.step.active .step-number {
-    opacity: 1;
-}
-
-.step-text {
+.left-panel, .right-panel {
+  flex: 1;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  font-size: 1.7rem;
 }
 
-.step-subtitle {
-  font-size: 0.9rem;
-  font-weight: normal;
+.left-panel {
+  background-color: #fff;
+  border-right: 1px solid #dee2e6;
+  font-size: 1.2rem; /* Increased base font size */
 }
 
-.step-arrow {
-  width: 0; 
-  height: 0; 
-  border-top: 25px solid transparent;
-  border-bottom: 25px solid transparent;
-  border-left: 25px solid #62a691;
-  margin: 0 30px;
+.right-panel {
+  justify-content: center;
 }
 
-.home-button-progress {
-  background-color: #4a82a0;
-  color: #fff;
-  border: 2px solid #fff;
-  border-radius: 25px;
-  padding: 8px 25px;
-  font-size: 1.3rem;
+h3 {
+  font-size: 1.8em; /* Relative to parent */
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #007bff;
+}
+
+.info-grid, .cost-grid {
+  display: grid;
+  gap: 15px;
+  font-size: 1.2em; /* Relative to parent */
+}
+
+.info-item, .cost-item {
+  display: contents;
+}
+
+.info-item .label, .cost-item .label {
+  font-weight: bold;
+  color: #555;
+}
+
+.info-item .value, .cost-item .value, .cost-item .amount {
+  text-align: right;
+  color: #333;
+}
+
+.cost-grid {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.cost-item .amount {
+  font-weight: bold;
+}
+
+.total-cost {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px dashed #ccc;
+  font-size: 1.5em; /* Relative to parent */
+  font-weight: bold;
+  color: #d9534f;
+}
+
+.nav-buttons {
+  margin-top: auto;
+}
+
+.btn-prev {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.2em;
+  border-radius: 5px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.home-button-progress:hover {
-  background-color: #3b6b84;
+.btn-prev:hover {
+  background-color: #5a6268;
 }
 
-.main-content {
-  display: flex;
-  flex-grow: 1;
-  padding: 20px;
-  gap: 20px;
+.amount-payable-section {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.bill-details-panel {
-  flex: 5;
-  background-color: #f0f4f8;
-  border: 1px solid #ccc;
-  display: flex;
-  flex-direction: column;
-  border-radius: 8px;
-}
-
-.payment-options-panel {
-  flex: 4;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  border-radius: 8px;
-}
-
-.bill-header, .bill-row {
-  display: flex;
-  padding: 10px;
-  font-size: 1.2rem;
-  align-items: center;
-}
-
-.bill-header {
-  background-color: #d1e0d7;
+.payable-text .payable-title {
+  font-size: 2.5rem;
   font-weight: bold;
-  border-bottom: 2px solid #b8c9bf;
 }
 
-.bill-row {
-  border-bottom: 1px solid #d1e0d7;
-  height: 50px;
-  box-sizing: border-box;
-}
-
-.bill-rows {
-  flex-grow: 1;
-}
-
-.col-date { flex: 2; }
-.col-name { flex: 1.5; }
-.col-mrn { flex: 1.5; }
-.col-clinic { flex: 1.5; }
-.col-amount { flex: 1.5; text-align: right; padding-right: 10px; }
-
-.bill-footer {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  background-color: #b8c9bf;
+.payable-text .payable-subtitle {
   font-size: 1.5rem;
-  font-weight: bold;
-  border-top: 2px solid #a3b5aa;
-  border-radius: 0 0 6px 6px;
-}
-
-.total-value {
-  font-weight: bold;
-}
-
-.total-payable-section {
-  border-bottom: 2px dashed #ccc;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
-}
-
-.total-payable {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.payable-text {
-  font-size: 1.5rem;
-  color: #555;
-  text-align: right;
-}
-
-.payable-subtitle {
-  font-size: 1rem;
+  color: #6c757d;
 }
 
 .payable-amount {
+  font-size: 6rem;
+  font-weight: bold;
+  color: #007bff;
+  margin: 10px 0;
+  line-height: 1;
+}
+
+.payable-warning {
+  font-size: 1.3rem; /* Increased font size */
   color: #d9534f;
-  font-size: 4.5rem;
   font-weight: bold;
 }
 
-.cash-notice {
-  font-size: 1.1rem;
-  color: #555;
+.select-payment-section .instruction-text {
   text-align: center;
-  margin-top: 15px;
-}
-
-.en-notice {
-  font-size: 0.9rem;
-}
-
-.selection-prompt {
-  text-align: center;
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #d9534f;
-  margin-bottom: 20px;
-}
-
-.en-prompt {
-  font-size: 1rem;
-  font-weight: normal;
+  font-size: 1.5rem;
+  margin-bottom: 30px;
 }
 
 .payment-buttons {
   display: flex;
-  gap: 20px;
+  justify-content: center;
+  gap: 30px;
 }
 
-.btn {
-  flex-grow: 1;
+.payment-btn {
+  flex: 1;
+  max-width: 300px;
+  padding: 20px;
+  font-size: 1.8rem;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  border: 2px solid #555;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  gap: 15px;
+  text-align: left;
 }
 
-.btn-text {
-  font-size: 2rem;
+.payment-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.cash-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.card-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-icon {
+  font-size: 3rem;
+}
+
+.btn-title {
+  font-size: 1.5rem;
   font-weight: bold;
 }
+
 .btn-subtitle {
-    font-size: 1rem;
-}
-
-.icon {
-  font-size: 3rem;
-  margin-right: 15px;
-}
-.icon-img {
-    height: 3rem;
-    margin-right: 15px;
-}
-
-.btn-cash {
-  background-color: #e8a238;
-  color: #fff;
-}
-
-.btn-credit {
-  background-color: #4a69b6;
-  color: #fff;
-}
-
-.btn:hover {
-    filter: brightness(1.1);
+  font-size: 1rem;
 }
 </style>

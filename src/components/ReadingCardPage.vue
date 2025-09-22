@@ -3,31 +3,19 @@
     <header class="header">
       <div class="logo-container">
         <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" class="logo-img">
+        <span class="logo-text">臺安醫院雙十分院 <br> Tai-An Hospital Shuang Shi Branch</span>
       </div>
       <div class="countdown-container">
-        剩餘秒數：<span class="seconds">{{ countdown }}</span>
+        自動回首頁：<span class="seconds">{{ countdown }}</span>
       </div>
     </header>
 
-    <div class="progress-bar-container">
-      <div class="step-wrapper">
-        <div class="step">
-          <span class="step-number-inactive">1</span>
-          <div class="step-text-inactive">
-            <div>確認繳費項目</div>
-            <div class="step-subtitle">PAYMENT INFORMATION</div>
-          </div>
+    <div class="info-bar">
+        <span class="info-icon">👤</span>
+        <div class="info-text">
+            <div class="info-title">健保卡資訊</div>
+            <div class="info-subtitle">Health insurance card information</div>
         </div>
-        <div class="step-arrow"></div>
-        <div class="step active">
-          <span class="step-number">2</span>
-          <div class="step-text">
-            <div>繳費資訊</div>
-            <div class="step-subtitle">PAYMENT INFORMATION</div>
-          </div>
-        </div>
-      </div>
-      <button class="home-button-progress" @click="goHome">🏠 首頁</button>
     </div>
 
     <main class="main-content">
@@ -44,13 +32,13 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['card-read-success', 'go-home']);
-
-const countdown = ref(118);
+const router = useRouter();
+const countdown = ref(30);
 
 const goHome = () => {
-  emit('go-home');
+  router.push({ name: 'WelcomePage' });
 };
 
 let countdownTimer;
@@ -68,7 +56,7 @@ onMounted(() => {
 
   // Simulate card reading for 3 seconds
   navigationTimer = setTimeout(() => {
-    emit('card-read-success');
+    router.push({ name: 'CardProcessedPage' });
   }, 3000);
 });
 
@@ -80,15 +68,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Using similar styles from other pages for consistency */
 .page-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100%;
-  background-color: #e8e8e8;
+  background-color: #f0f4f8;
   font-family: 'Microsoft JhengHei', sans-serif;
-  overflow: hidden;
 }
 
 .header {
@@ -100,8 +86,20 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
 .logo-img {
   height: 45px;
+  margin-right: 10px;
+}
+
+.logo-text {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.2;
 }
 
 .countdown-container {
@@ -117,64 +115,27 @@ onUnmounted(() => {
   font-weight: bold;
 }
 
-.progress-bar-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #62a691;
-  padding: 0 30px;
+.info-bar {
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #66A390;
+    color: #fff;
 }
 
-.step-wrapper {
-  display: flex;
-  align-items: center;
+.info-icon {
+    font-size: 2.5rem;
+    margin-right: 20px;
 }
 
-.step, .step.active {
-  display: flex;
-  align-items: center;
-  color: #fff;
-  padding: 15px 0;
+.info-text {
+    font-size: 1.8rem;
+    font-weight: bold;
 }
 
-.step-number-inactive, .step-number {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-right: 15px;
-}
-
-.step-number-inactive { opacity: 0.7; }
-.step-text, .step-text-inactive {
-  display: flex;
-  flex-direction: column;
-  font-size: 1.7rem;
-}
-
-.step-text { font-weight: bold; }
-.step-text-inactive { font-weight: normal; }
-
-.step-subtitle {
-  font-size: 0.9rem;
-  font-weight: normal;
-}
-
-.step-arrow {
-  width: 0; 
-  height: 0; 
-  border-top: 25px solid transparent;
-  border-bottom: 25px solid transparent;
-  border-left: 25px solid #62a691;
-  margin: 0 30px;
-}
-
-.home-button-progress {
-  background-color: #4a82a0;
-  color: #fff;
-  border: 2px solid #fff;
-  border-radius: 25px;
-  padding: 8px 25px;
-  font-size: 1.3rem;
-  cursor: pointer;
+.info-subtitle {
+    font-size: 1rem;
+    font-weight: normal;
 }
 
 .main-content {

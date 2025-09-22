@@ -21,10 +21,11 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const isLoading = ref(false);
 const progress = ref(0);
-const emit = defineEmits(['loading-complete']);
 
 const startLoading = () => {
   isLoading.value = true;
@@ -39,7 +40,7 @@ const startLoading = () => {
     setTimeout(() => {
       progress.value = interval.percent;
       if (interval.percent === 100) {
-        setTimeout(() => emit('loading-complete'), 500);
+        setTimeout(() => router.push({ name: 'KioskPage' }), 500);
       }
     }, interval.delay);
   });

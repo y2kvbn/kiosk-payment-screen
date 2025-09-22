@@ -1,14 +1,17 @@
-
 <template>
   <div class="page-container">
     <header class="header">
       <div class="logo-container">
         <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" class="logo-img">
+        <span class="logo-text">臺安醫院雙十分院 <br> Tai-An Hospital Shuang Shi Branch</span>
+      </div>
+      <div class="countdown-container">
+        自動回首頁：<span class="seconds">{{ countdown }}</span>
       </div>
     </header>
 
     <div class="info-bar">
-        <span class="info-icon">💳</span>
+        <span class="info-icon">👤</span>
         <div class="info-text">
             <div class="info-title">健保卡資訊</div>
             <div class="info-subtitle">Health insurance card information</div>
@@ -19,29 +22,50 @@
       <div class="card-processed-box">
         <img 
           src="https://i.ibb.co/pvDHXq5r/Chat-GPT-Image-2025-9-18-03-49-32-Photoroom.png" 
-          alt="Health Insurance Card" 
-          class="health-card-img">
-        <h2 class="instruction-text">過卡完成,請抽出健保卡</h2>
-        <p class="instruction-subtext">Health insurance card progressing is Finished Please draw out health insurance card</p>
+          alt="Health Insurance Card Processed" 
+          class="health-card-img" 
+          @click="goToPaymentDetails">
+        <h2 class="processed-text">過卡完成, 請抽出健保卡</h2>
+        <p class="processed-subtext">Health insurance card progressing is Finished Please draw out health insurance card</p>
       </div>
     </main>
-
-    <footer class="footer">
-      <!-- This footer is intentionally empty to maintain layout consistency -->
-    </footer>
+    <audio ref="audioPlayer" src="https://s33.aconvert.com/convert/p3r68-cdx67/sjii1-w032e.mp3" autoplay></audio>
   </div>
 </template>
 
 <script setup>
-import { onMounted, defineEmits } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['card-removed']);
+const router = useRouter();
+const countdown = ref(30);
+const audioPlayer = ref(null);
 
-// Automatically transition to the next page after 3 seconds
+const goToPaymentDetails = () => {
+  router.push({ name: 'PaymentDetailsPage' });
+};
+
+const goHome = () => {
+  router.push({ name: 'WelcomePage' });
+};
+
+let countdownTimer;
 onMounted(() => {
-  setTimeout(() => {
-    emit('card-removed');
-  }, 3000);
+  if (audioPlayer.value) {
+    audioPlayer.value.play();
+  }
+
+  countdownTimer = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--;
+    } else {
+      goHome();
+    }
+  }, 1000);
+});
+
+onUnmounted(() => {
+  clearInterval(countdownTimer);
 });
 </script>
 
@@ -71,13 +95,33 @@ onMounted(() => {
 
 .logo-img {
   height: 45px;
+  margin-right: 10px;
+}
+
+.logo-text {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.2;
+}
+
+.countdown-container {
+  background-color: #333;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 1.5rem;
+}
+
+.seconds {
+  color: #ffeb3b;
+  font-weight: bold;
 }
 
 .info-bar {
     display: flex;
     align-items: center;
     padding: 15px 30px;
-    background-color: #62a691;
+    background-color: #66A390;
     color: #fff;
 }
 
@@ -114,24 +158,25 @@ onMounted(() => {
 
 .health-card-img {
   max-width: 400px;
+  cursor: pointer;
   margin-bottom: 20px;
   border-radius: 15px;
+  transition: transform 0.3s ease;
 }
 
-.instruction-text {
+.health-card-img:hover {
+    transform: scale(1.05);
+}
+
+.processed-text {
   font-size: 2.5rem;
   font-weight: bold;
   color: #333;
   margin: 20px 0 10px;
 }
 
-.instruction-subtext {
+.processed-subtext {
   font-size: 1.5rem;
   color: #555;
-}
-
-.footer {
-  padding: 65px; /* Adjust padding to match other footers */
-  background-color: #f0f4f8;
 }
 </style>

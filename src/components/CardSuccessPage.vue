@@ -9,36 +9,35 @@
       </div>
       <h1 class="main-message">繳費成功！</h1>
       <h2 class="sub-message">請取回您的收據及健保卡</h2>
-      <p class="countdown-message">{{ countdown }} 秒後將自動返回首頁</p>
-      <button class="home-button" @click="goHome">回首頁</button>
+      <div class="button-group">
+        <button class="home-button" @click="goHome">回首頁</button>
+        <button class="print-button" @click="printReceipt">列印收據</button>
+      </div>
     </div>
+    <iframe id="print-frame" style="display: none;"></iframe>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['go-home']);
-const countdown = ref(3); // Changed countdown to 3 seconds
-let countdownTimer;
+const router = useRouter();
 
 const goHome = () => {
-  emit('go-home');
+  router.push({ name: 'WelcomePage' });
 };
 
-onMounted(() => {
-  countdownTimer = setInterval(() => {
-    if (countdown.value > 0) {
-      countdown.value--;
-    } else {
-      goHome();
-    }
-  }, 1000);
-});
-
-onUnmounted(() => {
-  clearInterval(countdownTimer);
-});
+const printReceipt = () => {
+  const iframe = document.getElementById('print-frame');
+  iframe.src = router.resolve({ name: 'ReceiptPage' }).href;
+  
+  iframe.onload = () => {
+    // Ensure the iframe has focus before printing
+    iframe.contentWindow.focus(); 
+    iframe.contentWindow.print();
+    iframe.onload = null; // Clean up the event listener
+  };
+};
 </script>
 
 <style scoped>
@@ -46,63 +45,28 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 120px);
-  background-color: #e0f2f1;
+  height: 100vh;
+  background-image: url('https://i.ibb.co/Kc1mq3ZK/a901b86c-34ce-4727-8160-2149c5611b5c-processed-lightpdf-com.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: 'Microsoft JhengHei', sans-serif;
   text-align: center;
 }
 
 .success-content {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 20px;
-  padding: 8vh 8vw;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.main-message {
-  font-size: 4.5rem;
-  color: #28a745;
-  font-weight: bold;
-  margin: 20px 0;
-}
-
-.sub-message {
-  font-size: 3rem;
-  color: #333;
-  font-weight: bold;
-  margin-top: 0;
-  margin-bottom: 3rem;
-}
-
-.countdown-message {
-  font-size: 1.5rem;
-  color: #6c757d;
-  margin-bottom: 2rem;
-}
-
-.home-button {
-  border: none;
-  border-radius: 15px;
-  padding: 20px 60px;
-  font-size: 2rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  background-color: #007bff;
-  color: white;
-}
-
-.home-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-3px);
+  padding: 50px 80px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  width: 80%;
+  max-width: 1000px;
 }
 
 .success-icon {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 30px;
 }
 
 .checkmark__circle {
@@ -110,21 +74,21 @@ onUnmounted(() => {
   stroke-dashoffset: 166;
   stroke-width: 2;
   stroke-miterlimit: 10;
-  stroke: #4bb71b;
+  stroke: #4caf50;
   fill: none;
   animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
 
 .checkmark {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   display: block;
   stroke-width: 2;
   stroke: #fff;
   stroke-miterlimit: 10;
   margin: 10% auto;
-  box-shadow: inset 0px 0px 0px #4bb71b;
+  box-shadow: inset 0px 0px 0px #4caf50;
   animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
 }
 
@@ -152,7 +116,55 @@ onUnmounted(() => {
 
 @keyframes fill {
   100% {
-    box-shadow: inset 0px 0px 0px 60px #4bb71b;
+    box-shadow: inset 0px 0px 0px 60px #4caf50;
   }
+}
+
+.main-message {
+  color: #333;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.sub-message {
+  color: #555;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.home-button, .print-button {
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 40px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+}
+
+.home-button {
+  background-color: #007bff;
+}
+
+.home-button:hover {
+  background-color: #0056b3;
+}
+
+.print-button {
+  background-color: #28a745;
+}
+
+.print-button:hover {
+  background-color: #218838;
 }
 </style>

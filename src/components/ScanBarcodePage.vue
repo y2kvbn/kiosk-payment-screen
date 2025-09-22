@@ -10,7 +10,7 @@
     <main class="main-content">
       <h1 class="title">請將批價單或收據上的條碼對準下方的掃描器</h1>
       <div class="scanner-area">
-        <img src="https://i.ibb.co/PG99ZD41/2025-09-18-181533.png" alt="Barcode" class="scanner-gif" @click="handleScan">
+        <img src="https://i.ibb.co/YFDMmddn/2025-09-18-181533.png" alt="Barcode" class="scanner-gif" @click="handleScan">
         <div class="scanner-line"></div>
       </div>
       <p class="instruction">請將手機或紙本條碼對準掃描器</p>
@@ -19,14 +19,17 @@
     <footer class="footer">
       <button class="back-button" @click="goHome">回首頁</button>
     </footer>
+    <audio ref="audioPlayer" src="https://s17.aconvert.com/convert/p3r68-cdx67/v75w2-01ham.mp3" autoplay></audio>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['scan-complete', 'go-home']);
+const router = useRouter();
 const currentTime = ref('');
+const audioPlayer = ref(null);
 
 const updateTime = () => {
   const now = new Date();
@@ -37,6 +40,9 @@ let timer;
 onMounted(() => {
   updateTime();
   timer = setInterval(updateTime, 1000);
+  if (audioPlayer.value) {
+    audioPlayer.value.play();
+  }
 });
 
 onUnmounted(() => {
@@ -45,11 +51,11 @@ onUnmounted(() => {
 
 const handleScan = () => {
   // Simulate a successful scan
-  emit('scan-complete');
+  router.push({ name: 'InsertCardPage' });
 };
 
 const goHome = () => {
-  emit('go-home');
+  router.push({ name: 'WelcomePage' });
 };
 </script>
 

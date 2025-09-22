@@ -8,60 +8,62 @@
     </div>
 
     <div class="main-content">
-      <div class="left-column">
-        <div class="main-title">
-          <p>歡迎使用自助繳費機</p>
-          <p class="subtitle">請先點選服務項目按鈕</p>
-        </div>
-        <div class="button-stack">
-          <div class="button color1" @click="emit('go-home')">
-            <div class="button-content">
-              <div class="button-title">慢箋領藥</div>
-              <div class="button-subtitle">Refilling a Prescription</div>
-            </div>
-            <div class="button-icon-wrapper">
-              <img src="https://img.88icon.com/download/jpg/20200821/b19eca3bcf7ef82cf953d17723f377d1_512_512.jpg!bg" alt="慢箋領藥" />
-            </div>
-          </div>
-          <div class="button color2" @click="emit('go-home')">
-            <div class="button-content">
-              <div class="button-title">收據補印</div>
-              <div class="button-subtitle">Reissue receipt</div>
-            </div>
-            <div class="button-icon-wrapper">
-              <img src="https://cdn-icons-png.freepik.com/512/4587/4587583.png" alt="收據補印" />
-            </div>
-          </div>
-        </div>
+      <div class="main-title">
+        <p>歡迎使用自助繳費機</p>
+        <p class="subtitle">請先點選服務項目按鈕</p>
       </div>
+      <div class="columns-container">
+        <div class="left-column">
+          <div class="button-stack">
+            <div class="button color1" @click="goHome">
+              <div class="button-content">
+                <div class="button-title">慢箋領藥</div>
+                <div class="button-subtitle">Refilling a Prescription</div>
+              </div>
+              <div class="button-icon-wrapper">
+                <img src="https://img.88icon.com/download/jpg/20200821/b19eca3bcf7ef82cf953d17723f377d1_512_512.jpg!bg" alt="慢箋領藥" />
+              </div>
+            </div>
+            <div class="button color2" @click="goHome">
+              <div class="button-content">
+                <div class="button-title">收據補印</div>
+                <div class="button-subtitle">Reissue receipt</div>
+              </div>
+              <div class="button-icon-wrapper">
+                <img src="https://cdn-icons-png.freepik.com/512/4587/4587583.png" alt="收據補印" />
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <div class="right-column">
-        <div class="button-stack">
-          <div class="button color3" @click="startPayment">
-            <div class="button-content">
-              <div class="button-title">批價繳費</div>
-              <div class="button-subtitle">Pay Medical expenses</div>
+        <div class="right-column">
+          <div class="button-stack">
+            <div class="button color3" @click="startPayment">
+              <div class="button-content">
+                <div class="button-title">批價繳費</div>
+                <div class="button-subtitle">Pay Medical expenses</div>
+              </div>
+              <div class="button-icon-wrapper">
+                <img src="https://media.istockphoto.com/id/1042581782/zh/%E5%90%91%E9%87%8F/%E4%BB%98%E6%AC%BE%E5%96%AE%E6%93%9A%E9%A0%81%E7%9A%84%E7%99%BC%E7%A5%A8%E6%88%96%E5%B8%B3%E5%96%AE%E5%90%91%E9%87%8F%E5%9C%96%E7%A4%BA.jpg?s=612x612&w=0&k=20&c=j20I-YxMpVs5uVfWgzNfm1rrTg0Dz864TbrZcHsI4MA=" alt="批價繳費" />
+              </div>
             </div>
-            <div class="button-icon-wrapper">
-              <img src="https://media.istockphoto.com/id/1042581782/zh/%E5%90%91%E9%87%8F/%E4%BB%98%E6%AC%BE%E5%96%AE%E6%93%9A%E9%A0%81%E7%9A%84%E7%99%BC%E7%A5%A8%E6%88%96%E5%B8%B3%E5%96%AE%E5%90%91%E9%87%8F%E5%9C%96%E7%A4%BA.jpg?s=612x612&w=0&k=20&c=j20I-YxMpVs5uVfWgzNfm1rrTg0Dz864TbrZcHsI4MA=" alt="批價繳費" />
+            <div class="button color4" @click="goHome">
+              <div class="button-content">
+                <div class="button-title">復健同療</div>
+                <div class="button-subtitle">Pay therapy sessionfee</div>
+              </div>
+              <div class="button-icon-wrapper">
+                <img src="https://www.shutterstock.com/image-vector/back-pain-treatment-logo-design-260nw-2056533320.jpg" alt="復健同療" />
+              </div>
             </div>
-          </div>
-          <div class="button color4" @click="emit('go-home')">
-            <div class="button-content">
-              <div class="button-title">復健同療</div>
-              <div class="button-subtitle">Pay therapy sessionfee</div>
-            </div>
-            <div class="button-icon-wrapper">
-              <img src="https://www.shutterstock.com/image-vector/back-pain-treatment-logo-design-260nw-2056533320.jpg" alt="復健同療" />
-            </div>
-          </div>
-          <div class="button color5" @click="emit('go-home')">
-            <div class="button-content">
-              <div class="button-title">預約掛號</div>
-              <div class="button-subtitle">Make an appointment</div>
-            </div>
-            <div class="button-icon-wrapper">
-              <img src="https://img.88icon.com/download/jpg/20201201/57c49dbff67a63bb490263d91a36b82e_512_512.jpg!bg" alt="預約掛號" />
+            <div class="button color5" @click="goHome">
+              <div class="button-content">
+                <div class="button-title">預約掛號</div>
+                <div class="button-subtitle">Make an appointment</div>
+              </div>
+              <div class="button-icon-wrapper">
+                <img src="https://img.88icon.com/download/jpg/20201201/57c49dbff67a63bb490263d91a36b82e_512_512.jpg!bg" alt="預約掛號" />
+              </div>
             </div>
           </div>
         </div>
@@ -72,13 +74,17 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
 
-const emit = defineEmits(['start-payment', 'go-home']);
-
+const router = useRouter();
 const currentTime = ref("");
 
 const startPayment = () => {
-  emit('start-payment');
+  router.push({ name: "ScanBarcodePage" });
+};
+
+const goHome = () => {
+  router.push({ name: "WelcomePage" });
 };
 
 const updateTime = () => {
@@ -129,6 +135,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   margin-left: 1cm;
+  margin-top: 8vh; /* Added to move the logo down */
 }
 
 .logo img {
@@ -145,11 +152,19 @@ onUnmounted(() => {
   position: relative;
   z-index: 2;
   display: flex;
+  flex-direction: column; /* Stack title and columns */
   justify-content: center;
-  align-items: flex-start;
-  gap: 40px;
+  align-items: center;
   padding: 2vh 40px;
   height: calc(100vh - 90px);
+}
+
+.columns-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align columns to the top */
+  gap: 40px;
+  width: 100%;
 }
 
 .left-column, .right-column {
@@ -161,8 +176,9 @@ onUnmounted(() => {
 }
 
 .main-title {
-  text-align: left;
+  text-align: center; /* Center the title */
   padding: 20px;
+  width: 100%;
 }
 
 .main-title p {
@@ -189,13 +205,13 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 30px;
+  padding: 22px 33px;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   cursor: pointer;
-  height: 130px;
+  height: 145px;
 }
 
 .button:hover {
@@ -214,20 +230,20 @@ onUnmounted(() => {
 }
 
 .button-title {
-  font-size: 2em;
+  font-size: 2.2em;
   font-weight: bold;
   color: #333;
 }
 
 .button-subtitle {
-  font-size: 1.2em;
+  font-size: 1.3em;
   color: #777;
   margin-top: 8px;
 }
 
 .button .button-icon-wrapper {
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   display: flex;
   justify-content: center;
   align-items: center;
