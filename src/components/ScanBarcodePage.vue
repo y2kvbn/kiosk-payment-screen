@@ -19,7 +19,7 @@
     <footer class="footer">
       <button class="back-button" @click="goHome">回首頁</button>
     </footer>
-    <audio ref="audioPlayer" src="https://s17.aconvert.com/convert/p3r68-cdx67/c1o3v-7xgou.mp3" autoplay></audio>
+    <audio ref="audioPlayer" src="https://soundoftext.s3.amazonaws.com/97595c52-443b-11ef-b125-17757917dd1d.mp3" autoplay></audio>
   </div>
 </template>
 
@@ -40,11 +40,15 @@ let timer;
 onMounted(() => {
   updateTime();
   timer = setInterval(updateTime, 1000);
-  // Try to play the audio, might be blocked by browser policy
+
+  // Try to play the audio on component mount
   if (audioPlayer.value) {
     audioPlayer.value.play().catch(error => {
-      console.log("Audio play was prevented: ", error);
-      // You might want to show a button to the user to start the audio manually
+      console.log("語音自動播放被瀏覽器阻擋: ", error);
+      // Audio playback was prevented by the browser's autoplay policy.
+    });
+    audioPlayer.value.addEventListener('error', (e) => {
+      console.error('語音檔案載入失敗:', e);
     });
   }
 });
@@ -79,11 +83,6 @@ const goHome = () => {
   padding: 20px 40px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
 }
 
 .logo img {

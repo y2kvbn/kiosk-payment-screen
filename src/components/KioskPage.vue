@@ -4,14 +4,14 @@
       <div class="logo">
         <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" />
       </div>
-      <div class="date-time">{{ currentTime }}</div>
-    </div>
-
-    <div class="main-content">
       <div class="main-title">
         <p>歡迎使用自助繳費機</p>
         <p class="subtitle">請先點選服務項目按鈕</p>
       </div>
+      <div class="date-time">{{ currentTime }}</div>
+    </div>
+
+    <div class="main-content">
       <div class="columns-container">
         <div class="left-column">
           <div class="button-stack">
@@ -129,13 +129,12 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
+  margin-top: 10vh;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  margin-left: 1cm;
-  margin-top: 8vh; /* Added to move the logo down */
 }
 
 .logo img {
@@ -156,7 +155,7 @@ onUnmounted(() => {
   justify-content: center;
   align-items: center;
   padding: 2vh 40px;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 112px - 10vh); /* Adjusted height */
 }
 
 .columns-container {
@@ -165,6 +164,7 @@ onUnmounted(() => {
   align-items: flex-start; /* Align columns to the top */
   gap: 40px;
   width: 100%;
+  margin-top: -8vh;
 }
 
 .left-column, .right-column {
@@ -177,19 +177,17 @@ onUnmounted(() => {
 
 .main-title {
   text-align: center; /* Center the title */
-  padding: 20px;
-  width: 100%;
 }
 
 .main-title p {
   margin: 0;
-  font-size: 2.8em;
+  font-size: 2.42em;
   font-weight: 900;
   color: #2c3e50;
 }
 
 .main-title .subtitle {
-  font-size: 1.8em;
+  font-size: 1.32em;
   color: #d35400;
   margin-top: 10px;
 }

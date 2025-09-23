@@ -19,12 +19,15 @@
 </template>
 
 <script setup>
+import { onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+let homeTimer;
 
 const goHome = () => {
-  router.push({ name: 'WelcomePage' });
+  clearTimeout(homeTimer);
+  router.push('/kiosk');
 };
 
 const printReceipt = () => {
@@ -38,6 +41,16 @@ const printReceipt = () => {
     iframe.onload = null; // Clean up the event listener
   };
 };
+
+onMounted(() => {
+  homeTimer = setTimeout(() => {
+    router.push('/kiosk');
+  }, 3000);
+});
+
+onUnmounted(() => {
+    clearTimeout(homeTimer);
+});
 </script>
 
 <style scoped>

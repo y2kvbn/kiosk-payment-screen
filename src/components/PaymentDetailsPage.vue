@@ -1,332 +1,562 @@
 <template>
-  <div class="payment-details-container">
-    <div class="left-panel">
-      <div class="patient-info-section">
-        <h3>就醫資料 PATIENT INFORMATION</h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="label">病歷號</span>
-            <span class="value">984751</span>
+  <div class="container">
+    <header class="header">
+      <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" class="header-logo">
+      <div class="steps">
+        <div class="step"><span>1</span> 確認繳費項目 <span class="subtitle">PAYMENT INFOMATION</span></div>
+        <div class="step active"><span>2</span> 繳費資訊 <span class="subtitle">PAYMENT INFOMATION</span></div>
+      </div>
+      <div class="header-right">
+        <div class="countdown" @click="resetCountdown">剩餘秒數：{{ countdown }}</div>
+        <button class="home-button" @click="goHome">
+          <span class="icon">🏠</span> 首頁
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="left-panel">
+        <div class="payment-list">
+          <div class="table-header">
+            <span>日期 <br>Date</span>
+            <span>姓名 <br>Name</span>
+            <span>病歷號 <br>MRN</span>
+            <span>科別 <br>Clinic</span>
+            <span>應繳金額 <br>Amount Due</span>
           </div>
-          <div class="info-item">
-            <span class="label">姓名</span>
-            <span class="value">王曉明</span>
+          <div class="table-body">
+            <div class="table-row" v-for="(item, index) in paymentItems" :key="index">
+              <span>{{ item.date }}</span>
+              <span>{{ item.name }}</span>
+              <span>{{ item.mrn }}</span>
+              <span>{{ item.clinic }}</span>
+              <span>{{ item.amount }}</span>
+            </div>
           </div>
-          <div class="info-item">
-            <span class="label">看診日期</span>
-            <span class="value">2025/09/10</span>
+          <div class="table-footer">
+            <span>合計金額 <br>Total expense</span>
+            <span class="total-amount">{{ totalAmount }}</span>
           </div>
         </div>
       </div>
-      <div class="cost-summary-section">
-        <h3>費用明細 COST DETAILS</h3>
-        <div class="cost-grid">
-          <div class="cost-item">
-            <span class="label">科別</span>
-            <span class="value">家醫科</span>
-            <span class="amount">340</span>
-          </div>
-          <div class="cost-item">
-            <span class="label">科別</span>
-            <span class="value">外科</span>
-            <span class="amount">540</span>
-          </div>
-          <div class="cost-item">
-            <span class="label">科別</span>
-            <span class="value">放射科</span>
-            <span class="amount">750</span>
-          </div>
-          <div class="cost-item">
-            <span class="label">科別</span>
-            <span class="value">藥劑科</span>
-            <span class="amount">620</span>
-          </div>
+
+      <div class="right-panel">
+        <div class="amount-payable">
+          <span class="label">應繳金額 <br>AMOUNT PAYABLE</span>
+          <span class="amount">{{ totalAmount }}</span>
         </div>
-        <div class="total-cost">
-          <span class="label">合計金額</span>
-          <span class="amount">2,250</span>
-        </div>
-      </div>
-      <div class="nav-buttons">
-        <button class="btn-prev" @click="goBack">上一步</button>
-      </div>
-    </div>
-    <div class="right-panel">
-      <!-- Payment Method Selection -->
-      <div v-if="!paymentMethod">
-        <div class="amount-payable-section">
-          <div class="payable-text">
-            <div class="payable-title">應繳金額</div>
-            <div class="payable-subtitle">AMOUNT PAYABLE</div>
+
+        <!-- Processing View -->
+        <template v-if="isProcessing">
+            <div class="card-instruction">
+                <img src="https://i.imgur.com/J6bBIp5.png" alt="Processing" class="card-reader-img"/>
+                <p class="instruction-text-main">{{ processingTextMain }}</p>
+                <p class="instruction-text-sub">{{ processingTextSub }}</p>
+            </div>
+            <div class="action-buttons-container" style="visibility: hidden;">
+                <button class="action-button"></button>
+                <button class="action-button"></button>
+            </div>
+        </template>
+
+        <!-- View for selecting payment method -->
+        <template v-else-if="paymentView === 'select'">
+          <div class="card-instruction">
+            <img src="https://i.imgur.com/J6bBIp5.png" alt="Payment Options" class="card-reader-img"/>
+            <p class="instruction-text-main">請選擇繳費方式</p>
+            <p class="instruction-text-sub">Please select a payment method</p>
           </div>
-          <div class="payable-amount">2,250</div>
-          <div class="payable-warning">※金額超過3,000元, 僅提供現金繳費<br>Amount exceed 3,000 dollars use cash for payment only</div>
-        </div>
-        <div class="select-payment-section">
-          <div class="instruction-text">請確認就醫資料並選擇繳費方式<br>Please confirm your medical information and select a payment method</div>
-          <div class="payment-buttons">
-            <button class="payment-btn cash-btn" @click="selectPaymentMethod('cash')">
-              <span class="btn-icon">💰</span>
+          <div class="action-buttons-container">
+            <button class="action-button cash-button" @click="selectCashPayment">
+              <span class="icon">$</span>
               <div>
-                <div class="btn-title">現金繳費</div>
-                <div class="btn-subtitle">CASH</div>
+                現金繳費 <br>
+                <span class="subtext">Cash</span>
               </div>
             </button>
-            <button class="payment-btn card-btn" @click="selectPaymentMethod('card')">
-              <span class="btn-icon">💳</span>
+            <button class="action-button card-button" @click="selectCardPayment">
+              <span class="icon">💳</span>
               <div>
-                <div class="btn-title">信用卡繳費</div>
-                <div class="btn-subtitle">CREDIT CARD</div>
+                信用卡 <br>
+                <span class="subtext">Credit Card</span>
               </div>
             </button>
           </div>
-        </div>
+        </template>
+
+        <!-- View for cash payment -->
+        <template v-else-if="paymentView === 'cash'">
+          <div class="cash-payment-details">
+            <div class="cash-info-row">
+              <span class="label">投入金額<br>AMOUNT PAID</span>
+              <span class="cash-amount">0</span>
+            </div>
+            <div class="cash-info-row">
+              <span class="label">應找金額<br>CHANGE</span>
+              <span class="cash-amount">0</span>
+            </div>
+          </div>
+          <div class="card-instruction">
+            <img src="https://i.imgur.com/GhpGy3a.png" alt="Insert Cash" class="cash-insert-img"/>
+            <p class="instruction-text-main">請投入紙鈔或硬幣</p>
+            <p class="instruction-text-sub">Please put in cash</p>
+          </div>
+           <div class="action-buttons-container cash-actions">
+             <button class="action-button cancel-button" @click="cancelPayment">
+              <span class="icon">✕</span>
+              <div>
+                取消繳費 <br>
+                <span class="subtext">CANCEL</span>
+              </div>
+            </button>
+            <button class="action-button cash-button" @click="confirmCashPayment">
+              <span class="icon">✓</span>
+              <div>
+                 確認付款 <br>
+                <span class="subtext">CONFIRM</span>
+              </div>
+            </button>
+          </div>
+        </template>
+        
+        <!-- View for card payment -->
+        <template v-else-if="paymentView === 'card'">
+          <div class="card-instruction">
+            <img src="https://i.imgur.com/J6bBIp5.png" alt="Payment Options" class="card-reader-img"/>
+            <p class="instruction-text-main">請感應信用卡</p>
+            <p class="instruction-text-sub">Please tap your credit card</p>
+          </div>
+          <div class="action-buttons-container cash-actions">
+             <button class="action-button cancel-button" @click="cancelPayment">
+              <span class="icon">✕</span>
+              <div>
+                取消 <br>
+                <span class="subtext">CANCEL</span>
+              </div>
+            </button>
+            <button class="action-button card-button" @click="confirmCardPayment">
+              <span class="icon">✓</span>
+              <div>
+                確認付款 <br>
+                <span class="subtext">CONFIRM</span>
+              </div>
+            </button>
+          </div>
+        </template>
+
       </div>
-      <!-- Cash Payment Steps -->
-      <div v-if="paymentMethod === 'cash'">
-        <CashPaymentSteps :steps="cashSteps" :currentStep="currentCashStep" @go-back="paymentMethod = null" />
-      </div>
-      <!-- Card Payment Steps -->
-      <div v-if="paymentMethod === 'card'">
-        <CardPaymentSteps :steps="cardSteps" :currentStep="currentCardStep" @go-back="paymentMethod = null" />
-      </div>
-    </div>
+    </main>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import CashPaymentSteps from './CashPaymentSteps.vue';
-import CardPaymentSteps from './CardPaymentSteps.vue';
 
 const router = useRouter();
-const paymentMethod = ref(null);
-const currentCashStep = ref(0);
-const currentCardStep = ref(0);
+const countdown = ref(120);
+let timer;
 
-const cashSteps = [
-  { title: '繳費說明', instruction: '為節省您寶貴的時間，本機具僅接受下列面額鈔券，造成不便之處，敬請見諒。' },
-  { title: '現金入口', instruction: '請將現金逐張平整放入，單次最多可放入20張。' },
-  { title: '完成繳費', instruction: '繳費已完成，請取回您的收據。' }
-];
+const paymentView = ref('select'); // 'select', 'cash', or 'card'
+const isProcessing = ref(false);
+const processingTextMain = ref("");
+const processingTextSub = ref("");
 
-const cardSteps = [
-  { title: '感應信用卡', instruction: '請將信用卡放置於感應區。' },
-  { title: '處理中', instruction: '正在處理您的付款，請稍候...' },
-  { title: '繳費成功', instruction: '交易成功，請取回您的信用卡及收據。' }
-];
+onMounted(() => {
+  timer = setInterval(() => {
+    if (countdown.value > 0) {
+      countdown.value--;
+    } else {
+      clearInterval(timer);
+      if (router.currentRoute.value.path.includes('payment-details')) {
+          router.push('/kiosk');
+      }
+    }
+  }, 1000);
+});
 
-const selectPaymentMethod = (method) => {
-  paymentMethod.value = method;
-  if (method === 'cash') {
-    startCashProcess();
-  } else if (method === 'card') {
-    startCardProcess();
-  }
+onUnmounted(() => {
+  clearInterval(timer);
+});
+
+const resetCountdown = () => {
+  countdown.value = 120;
 };
 
-const startCashProcess = () => {
-  currentCashStep.value = 1;
+const paymentItems = ref([
+  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '心臟內科', amount: 1500 },
+  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '皮膚科', amount: 750 },
+]);
+
+const totalAmount = computed(() => {
+    const total = paymentItems.value.reduce((total, item) => total + item.amount, 0);
+    return total.toLocaleString();
+});
+
+const goHome = () => {
+  router.push('/kiosk');
+};
+
+const selectCashPayment = () => {
+  paymentView.value = 'cash';
+};
+
+const selectCardPayment = () => {
+  paymentView.value = 'card';
+};
+
+const cancelPayment = () => {
+  if (isProcessing.value) return;
+  paymentView.value = 'select';
+};
+
+const processPayment = () => {
+  isProcessing.value = true;
+  clearInterval(timer);
   setTimeout(() => {
-    currentCashStep.value = 2;
-    setTimeout(() => {
-      currentCashStep.value = 3; 
-      setTimeout(() => router.push({ name: 'CardSuccessPage' }), 2000); 
-    }, 3000);
-  }, 3000);
+    router.push('/card-success');
+  }, 5000);
+}
+
+const confirmCardPayment = () => {
+  processingTextMain.value = "感應完成, 請稍後";
+  processingTextSub.value = "Tap complete, please wait";
+  processPayment();
 };
 
-const startCardProcess = () => {
-  currentCardStep.value = 1;
-  setTimeout(() => {
-    currentCardStep.value = 2;
-    setTimeout(() => {
-      currentCardStep.value = 3;
-      setTimeout(() => router.push({ name: 'CardSuccessPage' }), 2000);
-    }, 3000);
-  }, 3000);
+const confirmCashPayment = () => {
+  processingTextMain.value = "確認金額, 找零中, 請稍後";
+  processingTextSub.value = "Confirming amount, making change, please wait";
+  processPayment();
 };
 
-const goBack = () => {
-  router.go(-1);
-};
 </script>
 
 <style scoped>
-.payment-details-container {
-  display: flex;
+.container {
+  width: 100vw;
   height: 100vh;
-  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f0f0;
   font-family: 'Microsoft JhengHei', sans-serif;
 }
 
-.left-panel, .right-panel {
+.header {
+  display: flex;
+  align-items: center;
+  background-color: #5a9a78;
+  color: white;
+  padding: 10px 30px;
+}
+
+.header-logo {
+  height: 50px;
+  margin-right: 30px;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  margin-right: 40px;
+  opacity: 0.7;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+.step span:first-child {
+  background-color: white;
+  color: #5a9a78;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.step .subtitle {
+  font-size: 14px;
+  margin-left: 8px;
+  opacity: 0.8;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.countdown {
+  background-color: #3e3e3e;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffff00;
+  margin-right: 20px;
+  cursor: pointer; /* Add cursor pointer for the new click event */
+}
+
+.home-button {
+  background-color: #4c82a8;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 25px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.home-button .icon {
+  margin-right: 8px;
+  font-size: 24px;
+}
+
+.main-content {
+  display: flex;
   flex: 1;
-  padding: 40px;
+  padding: 20px;
+  gap: 20px;
+  overflow: hidden;
+}
+
+.left-panel {
+  flex: 1.2;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  display: flex;
+}
+
+.payment-list {
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.left-panel {
-  background-color: #fff;
-  border-right: 1px solid #dee2e6;
-  font-size: 1.2rem; /* Increased base font size */
+.table-header, .table-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;
+  text-align: center;
+  align-items: center;
+  padding: 18px 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+.table-header {
+  background-color: #e0e0e0;
+  font-weight: bold;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+.table-header span {
+  font-size: 18px;
+}
+
+.table-row {
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 20px;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-body {
+  flex-grow: 1;
+}
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+  background-color: #8db59d;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.table-footer .total-amount {
+  font-size: 30px;
 }
 
 .right-panel {
-  justify-content: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 30px;
 }
 
-h3 {
-  font-size: 1.8em; /* Relative to parent */
-  color: #333;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #007bff;
+.amount-payable {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
 }
 
-.info-grid, .cost-grid {
-  display: grid;
-  gap: 15px;
-  font-size: 1.2em; /* Relative to parent */
+.amount-payable .label {
+  font-size: 20px;
+  color: #555;
+  margin-right: 20px;
+  text-align: right;
+  line-height: 1.4;
 }
 
-.info-item, .cost-item {
-  display: contents;
-}
-
-.info-item .label, .cost-item .label {
+.amount-payable .amount {
+  font-size: 60px;
   font-weight: bold;
+  color: #d9534f;
+}
+
+.card-instruction {
+  text-align: center;
+}
+
+.card-reader-img {
+  width: 220px;
+  margin-bottom: 15px;
+}
+
+.instruction-text-main {
+  font-size: 28px;
+  font-weight: bold;
+  color: #c00;
+  margin-bottom: 5px;
+}
+
+.instruction-text-sub {
+  font-size: 18px;
   color: #555;
 }
 
-.info-item .value, .cost-item .value, .cost-item .amount {
-  text-align: right;
+.action-buttons-container {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+}
+
+.action-button {
+  flex: 1;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  border: 2px solid rgba(0,0,0,0.2);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  line-height: 1.2;
+  transition: background-color 0.2s;
+}
+
+.action-button .icon {
+  font-size: 40px;
+}
+
+.action-button .subtext {
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.cash-button {
+  background-color: #f0ad4e;
+  box-shadow: 0 4px #c28b3d;
+}
+
+.card-button {
+  background-color: #4267b2;
+  box-shadow: 0 4px #35538f;
+}
+
+.action-button:disabled,
+.action-button.card-switch-button:disabled {
+  background-color: #9a9a9a;
+  box-shadow: 0 4px #7b7b7b;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Styles for the new cash payment view */
+.cash-payment-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.cash-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24px;
+}
+
+.cash-info-row .label {
+  color: #555;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.cash-info-row .cash-amount {
+  font-size: 36px;
+  font-weight: bold;
   color: #333;
 }
 
-.cost-grid {
-  grid-template-columns: 1fr 1fr 1fr;
+.cash-insert-img {
+  width: 300px;
+  margin-bottom: 15px;
 }
 
-.cost-item .amount {
-  font-weight: bold;
-}
-
-.total-cost {
-  display: flex;
+.action-buttons-container.cash-actions {
   justify-content: space-between;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 2px dashed #ccc;
-  font-size: 1.5em; /* Relative to parent */
-  font-weight: bold;
-  color: #d9534f;
 }
 
-.nav-buttons {
-  margin-top: auto;
+.cancel-button {
+  background-color: #4db9d3;
+  box-shadow: 0 4px #419bab;
+  flex: 1.5; /* Make it wider */
 }
 
-.btn-prev {
-  width: 100%;
-  padding: 15px;
-  font-size: 1.2em;
-  border-radius: 5px;
-  background-color: #6c757d;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-prev:hover {
-  background-color: #5a6268;
-}
-
-.amount-payable-section {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.payable-text .payable-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-}
-
-.payable-text .payable-subtitle {
-  font-size: 1.5rem;
-  color: #6c757d;
-}
-
-.payable-amount {
-  font-size: 6rem;
-  font-weight: bold;
-  color: #007bff;
-  margin: 10px 0;
-  line-height: 1;
-}
-
-.payable-warning {
-  font-size: 1.3rem; /* Increased font size */
-  color: #d9534f;
-  font-weight: bold;
-}
-
-.select-payment-section .instruction-text {
-  text-align: center;
-  font-size: 1.5rem;
-  margin-bottom: 30px;
-}
-
-.payment-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-}
-
-.payment-btn {
+.card-switch-button {
+  background-color: #9a9a9a;
+  box-shadow: 0 4px #7b7b7b;
   flex: 1;
-  max-width: 300px;
-  padding: 20px;
-  font-size: 1.8rem;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  text-align: left;
 }
 
-.payment-btn:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+.credit-card-icon {
+  height: 32px;
+  filter: brightness(0) invert(1);
 }
 
-.cash-btn {
-  background-color: #28a745;
-  color: white;
-}
-
-.card-btn {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-icon {
-  font-size: 3rem;
-}
-
-.btn-title {
-  font-size: 1.5rem;
+.cancel-button .icon {
+  font-size: 32px;
   font-weight: bold;
-}
-
-.btn-subtitle {
-  font-size: 1rem;
 }
 </style>
