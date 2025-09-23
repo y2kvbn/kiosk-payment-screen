@@ -102,8 +102,10 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-const emit = defineEmits(['payment-success', 'go-home', 'go-back']);
+const router = useRouter();
+const emit = defineEmits(['payment-success', 'go-back']);
 
 const countdown = ref(118);
 const totalAmount = 880;
@@ -111,7 +113,7 @@ const amountPaid = ref(0);
 const change = computed(() => amountPaid.value >= totalAmount ? amountPaid.value - totalAmount : 0);
 
 const goHome = () => {
-  emit('go-home');
+  router.push('/');
 };
 
 const goBack = () => {

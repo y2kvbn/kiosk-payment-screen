@@ -29,6 +29,9 @@
         <p class="instruction-subtext">Please Insert health insurance card</p>
       </div>
     </main>
+    <div class="footer-actions">
+      <button class="btn btn-cancel" @click="goHome">❌ 取消繳費 <span class="btn-subtitle">CANCEL</span></button>
+    </div>
     <audio ref="audioPlayer" src="https://s19.aconvert.com/convert/p3r68-cdx67/sjwgt-hfobx.mp3" autoplay></audio>
   </div>
 </template>
@@ -183,5 +186,33 @@ onUnmounted(() => {
 .instruction-subtext {
   font-size: 1.5rem;
   color: #555;
+}
+
+.footer-actions {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-cancel {
+  background-color: #f0f0f0;
+  color: #555;
+  border: 2px solid #ccc;
+  padding: 15px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-subtitle {
+    font-size: 0.9rem;
+    font-weight: normal;
+    margin-left: 8px;
+}
+
+.btn-cancel:hover {
+    filter: brightness(1.1);
 }
 </style>

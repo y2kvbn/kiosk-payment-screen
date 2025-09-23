@@ -46,103 +46,39 @@
           <span class="amount">{{ totalAmount }}</span>
         </div>
 
-        <!-- Processing View -->
-        <template v-if="isProcessing">
-            <div class="card-instruction">
-                <img src="https://i.imgur.com/J6bBIp5.png" alt="Processing" class="card-reader-img"/>
-                <p class="instruction-text-main">{{ processingTextMain }}</p>
-                <p class="instruction-text-sub">{{ processingTextSub }}</p>
-            </div>
-            <div class="action-buttons-container" style="visibility: hidden;">
-                <button class="action-button"></button>
-                <button class="action-button"></button>
-            </div>
-        </template>
+        <!-- Combined View Area -->
+        <div class="payment-view-area">
+          <div class="card-instruction">
+            <img :src="paymentImage" alt="Payment Method" class="payment-method-img"/>
+            <p class="instruction-text-main">{{ instructionText.main }}</p>
+            <p class="instruction-text-sub">{{ instructionText.sub }}</p>
+          </div>
 
-        <!-- View for selecting payment method -->
-        <template v-else-if="paymentView === 'select'">
-          <div class="card-instruction">
-            <img src="https://i.imgur.com/J6bBIp5.png" alt="Payment Options" class="card-reader-img"/>
-            <p class="instruction-text-main">請選擇繳費方式</p>
-            <p class="instruction-text-sub">Please select a payment method</p>
-          </div>
-          <div class="action-buttons-container">
-            <button class="action-button cash-button" @click="selectCashPayment">
-              <span class="icon">$</span>
-              <div>
-                現金繳費 <br>
-                <span class="subtext">Cash</span>
-              </div>
+          <!-- Action Buttons -->
+          <div class="action-buttons-container" :class="{ 'processing': isProcessing }">
+             <button v-if="paymentView === 'select' || paymentView === 'cash'" class="action-button cash-button" @click="handleCashAction" :disabled="isProcessing">
+                <span class="icon">$</span>
+                <div>
+                  {{ paymentView === 'select' ? '現金繳費' : '確認付款' }}<br>
+                  <span class="subtext">{{ paymentView === 'select' ? 'Cash' : 'CONFIRM' }}</span>
+                </div>
             </button>
-            <button class="action-button card-button" @click="selectCardPayment">
-              <span class="icon">💳</span>
-              <div>
-                信用卡 <br>
-                <span class="subtext">Credit Card</span>
-              </div>
+             <button v-if="paymentView === 'select' || paymentView === 'card'" class="action-button card-button" @click="handleCardAction" :disabled="isProcessing">
+                <span class="icon">💳</span>
+                <div>
+                  {{ paymentView === 'select' ? '信用卡' : '確認付款' }}<br>
+                  <span class="subtext">{{ paymentView === 'select' ? 'Credit Card' : 'CONFIRM' }}</span>
+                </div>
             </button>
-          </div>
-        </template>
-
-        <!-- View for cash payment -->
-        <template v-else-if="paymentView === 'cash'">
-          <div class="cash-payment-details">
-            <div class="cash-info-row">
-              <span class="label">投入金額<br>AMOUNT PAID</span>
-              <span class="cash-amount">0</span>
-            </div>
-            <div class="cash-info-row">
-              <span class="label">應找金額<br>CHANGE</span>
-              <span class="cash-amount">0</span>
-            </div>
-          </div>
-          <div class="card-instruction">
-            <img src="https://i.imgur.com/GhpGy3a.png" alt="Insert Cash" class="cash-insert-img"/>
-            <p class="instruction-text-main">請投入紙鈔或硬幣</p>
-            <p class="instruction-text-sub">Please put in cash</p>
-          </div>
-           <div class="action-buttons-container cash-actions">
-             <button class="action-button cancel-button" @click="cancelPayment">
-              <span class="icon">✕</span>
-              <div>
-                取消繳費 <br>
-                <span class="subtext">CANCEL</span>
-              </div>
-            </button>
-            <button class="action-button cash-button" @click="confirmCashPayment">
-              <span class="icon">✓</span>
-              <div>
-                 確認付款 <br>
-                <span class="subtext">CONFIRM</span>
-              </div>
+             <button v-if="paymentView !== 'select'" class="action-button cancel-button" @click="cancelPayment" :disabled="isProcessing">
+                <span class="icon">✕</span>
+                <div>
+                  取消 <br>
+                  <span class="subtext">CANCEL</span>
+                </div>
             </button>
           </div>
-        </template>
-        
-        <!-- View for card payment -->
-        <template v-else-if="paymentView === 'card'">
-          <div class="card-instruction">
-            <img src="https://i.imgur.com/J6bBIp5.png" alt="Payment Options" class="card-reader-img"/>
-            <p class="instruction-text-main">請感應信用卡</p>
-            <p class="instruction-text-sub">Please tap your credit card</p>
-          </div>
-          <div class="action-buttons-container cash-actions">
-             <button class="action-button cancel-button" @click="cancelPayment">
-              <span class="icon">✕</span>
-              <div>
-                取消 <br>
-                <span class="subtext">CANCEL</span>
-              </div>
-            </button>
-            <button class="action-button card-button" @click="confirmCardPayment">
-              <span class="icon">✓</span>
-              <div>
-                確認付款 <br>
-                <span class="subtext">CONFIRM</span>
-              </div>
-            </button>
-          </div>
-        </template>
+        </div>
 
       </div>
     </main>
@@ -159,8 +95,25 @@ let timer;
 
 const paymentView = ref('select'); // 'select', 'cash', or 'card'
 const isProcessing = ref(false);
-const processingTextMain = ref("");
-const processingTextSub = ref("");
+
+const paymentImage = computed(() => {
+  if (paymentView.value === 'cash') return 'https://i.ibb.co/tTwXvTHs/Cash-Paying.gif';
+  if (paymentView.value === 'card') return 'https://i.ibb.co/4ZjcJ87w/istockphoto-1330150853-612x612-Photoroom.png';
+  return 'https://i.ibb.co/qMs91zsm/Chat-GPT-Image-2025-9-23-10-29-28.png';
+});
+
+const instructionText = computed(() => {
+  switch (paymentView.value) {
+    case 'cash':
+      return { main: '請投入紙鈔或硬幣', sub: 'Please put in cash' };
+    case 'card':
+      return { main: '請感應信用卡', sub: 'Please tap your credit card' };
+    case 'processing':
+       return { main: "處理中, 請稍後", sub: "Processing, please wait" };
+    default:
+      return { main: '確認就醫資料,並選擇繳費方式', sub: 'Confirm medical details and select a payment method' };
+  }
+});
 
 onMounted(() => {
   timer = setInterval(() => {
@@ -197,38 +150,36 @@ const goHome = () => {
   router.push('/kiosk');
 };
 
-const selectCashPayment = () => {
-  paymentView.value = 'cash';
+const handleCashAction = () => {
+  if (paymentView.value === 'select') {
+    paymentView.value = 'cash';
+  } else {
+    confirmPayment();
+  }
 };
 
-const selectCardPayment = () => {
-  paymentView.value = 'card';
+const handleCardAction = () => {
+  if (paymentView.value === 'select') {
+    paymentView.value = 'card';
+  } else {
+    confirmPayment();
+  }
 };
 
 const cancelPayment = () => {
   if (isProcessing.value) return;
-  paymentView.value = 'select';
+  router.push('/kiosk'); // Navigate to the main kiosk page
 };
 
-const processPayment = () => {
+const confirmPayment = () => {
   isProcessing.value = true;
-  clearInterval(timer);
+  const originalView = paymentView.value;
+  paymentView.value = 'processing';
+  clearInterval(timer); // Stop countdown during processing
   setTimeout(() => {
     router.push('/card-success');
-  }, 5000);
+  }, 3000);
 }
-
-const confirmCardPayment = () => {
-  processingTextMain.value = "感應完成, 請稍後";
-  processingTextSub.value = "Tap complete, please wait";
-  processPayment();
-};
-
-const confirmCashPayment = () => {
-  processingTextMain.value = "確認金額, 找零中, 請稍後";
-  processingTextSub.value = "Confirming amount, making change, please wait";
-  processPayment();
-};
 
 </script>
 
@@ -305,7 +256,7 @@ const confirmCashPayment = () => {
   font-weight: bold;
   color: #ffff00;
   margin-right: 20px;
-  cursor: pointer; /* Add cursor pointer for the new click event */
+  cursor: pointer;
 }
 
 .home-button {
@@ -353,7 +304,6 @@ const confirmCashPayment = () => {
   text-align: center;
   align-items: center;
   padding: 18px 10px;
-  font-size: 18px;
   color: #333;
 }
 
@@ -364,12 +314,12 @@ const confirmCashPayment = () => {
   border-top-right-radius: 8px;
 }
 .table-header span {
-  font-size: 18px;
+  font-size: 20px; /* Increased by ~10% from 18px */
 }
 
 .table-row {
   border-bottom: 1px solid #e0e0e0;
-  font-size: 20px;
+  font-size: 22px; /* Increased by 10% from 20px */
 }
 
 .table-row:last-child {
@@ -387,22 +337,20 @@ const confirmCashPayment = () => {
   padding: 25px;
   background-color: #8db59d;
   color: white;
-  font-size: 24px;
+  font-size: 26px; /* Increased by ~10% from 24px */
   font-weight: bold;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
 
 .table-footer .total-amount {
-  font-size: 30px;
+  font-size: 33px; /* Increased by 10% from 30px */
 }
 
 .right-panel {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -414,6 +362,7 @@ const confirmCashPayment = () => {
   align-items: center;
   width: 100%;
   justify-content: space-between;
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 .amount-payable .label {
@@ -430,13 +379,26 @@ const confirmCashPayment = () => {
   color: #d9534f;
 }
 
-.card-instruction {
-  text-align: center;
+.payment-view-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
-.card-reader-img {
-  width: 220px;
+.card-instruction {
+  text-align: center;
+  margin-top: 20px; /* Add some space */
+}
+
+.payment-method-img {
+  width: 270px;  /* 250px * 1.08 */
+  height: 194px; /* 180px * 1.08 */
+  object-fit: contain; /* Ensure aspect ratio is maintained */
   margin-bottom: 15px;
+  border-radius: 8px;
 }
 
 .instruction-text-main {
@@ -455,6 +417,11 @@ const confirmCashPayment = () => {
   display: flex;
   width: 100%;
   gap: 20px;
+  margin-top: 20px; /* Add space */
+}
+
+.action-buttons-container.processing {
+    justify-content: center;
 }
 
 .action-button {
@@ -471,7 +438,7 @@ const confirmCashPayment = () => {
   align-items: center;
   gap: 15px;
   line-height: 1.2;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .action-button .icon {
@@ -493,70 +460,17 @@ const confirmCashPayment = () => {
   box-shadow: 0 4px #35538f;
 }
 
-.action-button:disabled,
-.action-button.card-switch-button:disabled {
+.cancel-button {
+  background-color: #d9534f; /* Red color for cancel */
+  box-shadow: 0 4px #b54541;
+  flex: 1.2; 
+}
+
+.action-button:disabled {
   background-color: #9a9a9a;
   box-shadow: 0 4px #7b7b7b;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-/* Styles for the new cash payment view */
-.cash-payment-details {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin: 20px 0;
-}
-
-.cash-info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 24px;
-}
-
-.cash-info-row .label {
-  color: #555;
-  text-align: left;
-  line-height: 1.3;
-}
-
-.cash-info-row .cash-amount {
-  font-size: 36px;
-  font-weight: bold;
-  color: #333;
-}
-
-.cash-insert-img {
-  width: 300px;
-  margin-bottom: 15px;
-}
-
-.action-buttons-container.cash-actions {
-  justify-content: space-between;
-}
-
-.cancel-button {
-  background-color: #4db9d3;
-  box-shadow: 0 4px #419bab;
-  flex: 1.5; /* Make it wider */
-}
-
-.card-switch-button {
-  background-color: #9a9a9a;
-  box-shadow: 0 4px #7b7b7b;
-  flex: 1;
-}
-
-.credit-card-icon {
-  height: 32px;
-  filter: brightness(0) invert(1);
-}
-
-.cancel-button .icon {
-  font-size: 32px;
-  font-weight: bold;
-}
 </style>

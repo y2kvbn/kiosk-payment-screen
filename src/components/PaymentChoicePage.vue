@@ -62,10 +62,10 @@
             <div class="amount-value">2,250</div>
           </div>
           <div class="card-reader-info">
-            <img src="https://i.imgur.com/s2w3nYL.png" alt="Card Reader" class="card-reader-image">
+            <img :src="paymentImage" alt="Payment Method" class="card-reader-image">
             <div class="instruction-text">
-              <p class="main-instruction">請感應信用卡</p>
-              <p class="en-instruction">Hold your Credit Card against the card reader</p>
+              <p class="main-instruction">{{ instructionText.main }}</p>
+              <p class="en-instruction">{{ instructionText.sub }}</p>
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@
     </div>
 
     <div class="footer-buttons">
-      <button class="cash-button" @click="payWithCash">
+      <button class="cash-button" @click="payWithCash" :disabled="isProcessing">
         <div class="button-icon-wrapper">
           <span class="button-icon-cash">$</span>
         </div>
@@ -82,7 +82,7 @@
           <span class="en-button">Cash</span>
         </div>
       </button>
-      <button class="credit-card-button" @click="payWithCreditCard">
+      <button class="credit-card-button" @click="payWithCreditCard" :disabled="isProcessing">
         <div class="button-icon-wrapper">
           <svg class="button-icon-cc" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
             <path fill="white" d="M512 288h-96v64h96v-64zm-128 0h-96v64h96v-64zm-128 0H160v64h96v-64zM640 96L0 96v320c0 35.3 28.7 64 64 64h512c35.3 0 64-28.7 64-64V96zM248 416c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm120 0c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zm120 0c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40zM576 64H64C28.7 64 0 35.3 0 0v0h576c35.3 0 64 28.7 64 64v0z" />
@@ -98,23 +98,53 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const countdown = ref(118);
 let timer = null;
+const selectedPayment = ref(null);
+const isProcessing = ref(false);
+
+const paymentImage = computed(() => {
+  if (selectedPayment.value === 'cash') {
+    return 'https://i.ibb.co/tTwXvTHs/Cash-Paying.gif';
+  }
+  if (selectedPayment.value === 'card') {
+    return 'https://i.ibb.co/4ZjcJ87w/istockphoto-1330150853-612x612-Photoroom.png';
+  }
+  return 'https://i.ibb.co/qMs91zsm/Chat-GPT-Image-2025-9-23-10-29-28.png';
+});
+
+const instructionText = computed(() => {
+  if (selectedPayment.value === 'cash') {
+    return { main: '請將現金放入指定位置', sub: 'Please insert cash into the designated slot' };
+  }
+  if (selectedPayment.value === 'card') {
+    return { main: '請感應或插入信用卡', sub: 'Please tap or insert your credit card' };
+  }
+  return { main: '確認就醫資料,並選擇繳費方式', sub: 'Please confirm your medical details and select a payment method' };
+});
 
 const goHome = () => {
   router.push('/');
 };
 
 const payWithCash = () => {
-  router.push('/cash-payment');
+  isProcessing.value = true;
+  selectedPayment.value = 'cash';
+  setTimeout(() => {
+    router.push('/payment');
+  }, 2000);
 };
 
 const payWithCreditCard = () => {
-  router.push('/card-payment-steps');
+  isProcessing.value = true;
+  selectedPayment.value = 'card';
+  setTimeout(() => {
+    router.push('/insert-card');
+  }, 2000);
 };
 
 onMounted(() => {
@@ -123,7 +153,7 @@ onMounted(() => {
       countdown.value--;
     } else {
       clearInterval(timer);
-      router.push('/kiosk'); // Or your timeout destination
+      router.push('/kiosk');
     }
   }, 1000);
 });
@@ -342,6 +372,8 @@ onUnmounted(() => {
 
 .card-reader-image {
   width: 250px;
+  height: 180px;
+  object-fit: contain;
   border-radius: 8px;
   margin-bottom: 20px;
 }
@@ -375,6 +407,12 @@ onUnmounted(() => {
   align-items: center;
   gap: 25px;
   box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+  transition: background-color 0.3s, opacity 0.3s;
+}
+
+.cash-button:disabled, .credit-card-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .cash-button {
