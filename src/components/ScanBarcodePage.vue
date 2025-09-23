@@ -19,7 +19,7 @@
     <footer class="footer">
       <button class="back-button" @click="goHome">回首頁</button>
     </footer>
-    <audio ref="audioPlayer" src="https://soundoftext.s3.amazonaws.com/97595c52-443b-11ef-b125-17757917dd1d.mp3" autoplay></audio>
+    <audio ref="audioPlayer" src="https://s19.aconvert.com/convert/p3r68-cdx67/743tt-7mkpc.mp3" autoplay></audio>
   </div>
 </template>
 
@@ -41,11 +41,9 @@ onMounted(() => {
   updateTime();
   timer = setInterval(updateTime, 1000);
 
-  // Try to play the audio on component mount
   if (audioPlayer.value) {
     audioPlayer.value.play().catch(error => {
       console.log("語音自動播放被瀏覽器阻擋: ", error);
-      // Audio playback was prevented by the browser's autoplay policy.
     });
     audioPlayer.value.addEventListener('error', (e) => {
       console.error('語音檔案載入失敗:', e);
@@ -58,7 +56,6 @@ onUnmounted(() => {
 });
 
 const handleScan = () => {
-  // Simulate a successful scan
   router.push({ name: 'InsertCardPage' });
 };
 

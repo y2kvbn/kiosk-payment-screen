@@ -29,7 +29,7 @@
         <p class="processed-subtext">Health insurance card progressing is Finished Please draw out health insurance card</p>
       </div>
     </main>
-    <audio ref="audioPlayer" src="https://s33.aconvert.com/convert/p3r68-cdx67/sjii1-w032e.mp3" autoplay></audio>
+    <audio ref="audioPlayer" src="https://s51.aconvert.com/convert/p3r68-cdx67/5udto-aste1.mp3" autoplay></audio>
   </div>
 </template>
 
@@ -52,7 +52,12 @@ const goHome = () => {
 let countdownTimer;
 onMounted(() => {
   if (audioPlayer.value) {
-    audioPlayer.value.play();
+    audioPlayer.value.play().catch(error => {
+      console.log("語音自動播放被瀏覽器阻擋: ", error);
+    });
+    audioPlayer.value.addEventListener('error', (e) => {
+      console.error('語音檔案載入失敗:', e);
+    });
   }
 
   countdownTimer = setInterval(() => {

@@ -29,7 +29,7 @@
         <p class="instruction-subtext">Please Insert health insurance card</p>
       </div>
     </main>
-    <audio ref="audioPlayer" src="https://s33.aconvert.com/convert/p3r68-cdx67/uzv0u-bi2zu.mp3" autoplay></audio>
+    <audio ref="audioPlayer" src="https://s19.aconvert.com/convert/p3r68-cdx67/sjwgt-hfobx.mp3" autoplay></audio>
   </div>
 </template>
 
@@ -52,8 +52,14 @@ const goHome = () => {
 let countdownTimer;
 onMounted(() => {
   if (audioPlayer.value) {
-    audioPlayer.value.play();
+    audioPlayer.value.play().catch(error => {
+      console.log("語音自動播放被瀏覽器阻擋: ", error);
+    });
+    audioPlayer.value.addEventListener('error', (e) => {
+      console.error('語音檔案載入失敗:', e);
+    });
   }
+  
   countdownTimer = setInterval(() => {
     if (countdown.value > 0) {
       countdown.value--;
