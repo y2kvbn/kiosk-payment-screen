@@ -93,12 +93,20 @@ const router = useRouter();
 const countdown = ref(120);
 let timer;
 
-const paymentView = ref('select'); // 'select', 'cash', or 'card'
+const paymentView = ref('select'); // 'select', 'cash', 'card', 'processing'
+const paymentMethod = ref(null); // 'cash' or 'card' - to remember the choice
 const isProcessing = ref(false);
 
 const paymentImage = computed(() => {
+  // During processing, keep showing the method's image
+  if (paymentView.value === 'processing') {
+    if (paymentMethod.value === 'cash') return 'https://i.ibb.co/tTwXvTHs/Cash-Paying.gif';
+    if (paymentMethod.value === 'card') return 'https://i.ibb.co/4ZjcJ87w/istockphoto-1330150853-612x612-Photoroom.png';
+  }
+  // Standard view logic
   if (paymentView.value === 'cash') return 'https://i.ibb.co/tTwXvTHs/Cash-Paying.gif';
   if (paymentView.value === 'card') return 'https://i.ibb.co/4ZjcJ87w/istockphoto-1330150853-612x612-Photoroom.png';
+  
   return 'https://i.ibb.co/qMs91zsm/Chat-GPT-Image-2025-9-23-10-29-28.png';
 });
 
@@ -137,8 +145,10 @@ const resetCountdown = () => {
 };
 
 const paymentItems = ref([
-  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '心臟內科', amount: 1500 },
-  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '皮膚科', amount: 750 },
+  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '心臟內科', amount: 1000 },
+  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '皮膚科', amount: 500 },
+  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '家醫科', amount: 400 },
+  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '耳鼻喉科', amount: 350 },
 ]);
 
 const totalAmount = computed(() => {
@@ -153,6 +163,7 @@ const goHome = () => {
 const handleCashAction = () => {
   if (paymentView.value === 'select') {
     paymentView.value = 'cash';
+    paymentMethod.value = 'cash'; // Remember the choice
   } else {
     confirmPayment();
   }
@@ -161,6 +172,7 @@ const handleCashAction = () => {
 const handleCardAction = () => {
   if (paymentView.value === 'select') {
     paymentView.value = 'card';
+    paymentMethod.value = 'card'; // Remember the choice
   } else {
     confirmPayment();
   }
@@ -168,12 +180,11 @@ const handleCardAction = () => {
 
 const cancelPayment = () => {
   if (isProcessing.value) return;
-  router.push('/kiosk'); // Navigate to the main kiosk page
+  router.push('/kiosk'); // Navigate to the main kiosk page (As per user instruction)
 };
 
 const confirmPayment = () => {
   isProcessing.value = true;
-  const originalView = paymentView.value;
   paymentView.value = 'processing';
   clearInterval(timer); // Stop countdown during processing
   setTimeout(() => {
@@ -319,7 +330,7 @@ const confirmPayment = () => {
 
 .table-row {
   border-bottom: 1px solid #e0e0e0;
-  font-size: 22px; /* Increased by 10% from 20px */
+  font-size: 24px; /* Increased by 10% from 22px */
 }
 
 .table-row:last-child {
@@ -394,9 +405,9 @@ const confirmPayment = () => {
 }
 
 .payment-method-img {
-  width: 270px;  /* 250px * 1.08 */
-  height: 194px; /* 180px * 1.08 */
-  object-fit: contain; /* Ensure aspect ratio is maintained */
+  width: 342px; /* 297px * 1.15 */
+  height: 245px; /* 213px * 1.15 */
+  object-fit: contain;
   margin-bottom: 15px;
   border-radius: 8px;
 }
