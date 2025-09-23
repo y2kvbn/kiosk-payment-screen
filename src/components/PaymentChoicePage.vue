@@ -128,12 +128,16 @@ const instructionText = computed(() => {
 });
 
 const goHome = () => {
+  // Robust fix: Clear timer before navigating
+  clearInterval(timer);
   router.push('/');
 };
 
 const payWithCash = () => {
   isProcessing.value = true;
   selectedPayment.value = 'cash';
+  // Robust fix: Clear timer before navigating
+  clearInterval(timer);
   setTimeout(() => {
     router.push('/payment');
   }, 2000);
@@ -142,6 +146,8 @@ const payWithCash = () => {
 const payWithCreditCard = () => {
   isProcessing.value = true;
   selectedPayment.value = 'card';
+  // Robust fix: Clear timer before navigating
+  clearInterval(timer);
   setTimeout(() => {
     router.push('/insert-card');
   }, 2000);
@@ -152,6 +158,7 @@ onMounted(() => {
     if (countdown.value > 0) {
       countdown.value--;
     } else {
+      // The timer clears itself before navigating away
       clearInterval(timer);
       router.push('/kiosk');
     }
@@ -159,6 +166,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  // This acts as a final fallback.
   clearInterval(timer);
 });
 </script>

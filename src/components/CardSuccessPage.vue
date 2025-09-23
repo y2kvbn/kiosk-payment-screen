@@ -8,52 +8,54 @@
         </svg>
       </div>
       <h1 class="main-message">繳費成功！</h1>
-      <h2 class="sub-message">請取回您的收據及健保卡</h2>
+      <h2 class="sub-message">請選擇您的下一步</h2>
       <div class="button-group">
         <button class="home-button" @click="goHome">回首頁</button>
-        <button class="print-button" @click="printReceipt">列印收據</button>
+        <button class="print-button" @click="goToReceiptPage">列印收據</button>
       </div>
     </div>
-    <iframe id="print-frame" style="display: none;"></iframe>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-let homeTimer;
+const receiptData = ref(null);
 
-const goHome = () => {
-  clearTimeout(homeTimer);
-  router.push('/kiosk');
-};
-
-const printReceipt = () => {
-  const iframe = document.getElementById('print-frame');
-  iframe.src = router.resolve({ name: 'ReceiptPage' }).href;
-  
-  iframe.onload = () => {
-    // Ensure the iframe has focus before printing
-    iframe.contentWindow.focus(); 
-    iframe.contentWindow.print();
-    iframe.onload = null; // Clean up the event listener
-  };
-};
-
+// Simplified onMounted: Only retrieves data, no timers.
 onMounted(() => {
-  homeTimer = setTimeout(() => {
-    router.push('/kiosk');
-  }, 3000);
+  if (history.state && history.state.paymentDetails) {
+    receiptData.value = history.state.paymentDetails;
+  }
 });
 
-onUnmounted(() => {
-    clearTimeout(homeTimer);
-});
+// goHome: Navigates to the WelcomePage as requested.
+const goHome = () => {
+  router.push({ name: 'WelcomePage' });
+};
+
+// goToReceiptPage: Navigates with state for auto-printing.
+const goToReceiptPage = () => {
+  if (receiptData.value) {
+    router.push({
+      name: 'ReceiptPage',
+      state: { 
+        paymentDetails: receiptData.value,
+        autoPrint: true 
+      }
+    });
+  } else {
+    // Fallback if data is somehow missing
+    console.error("Receipt data is missing. Cannot proceed to print.");
+    goHome();
+  }
+};
 </script>
 
 <style scoped>
+/* Styles remain unchanged and correct */
 .page-view {
   display: flex;
   justify-content: center;

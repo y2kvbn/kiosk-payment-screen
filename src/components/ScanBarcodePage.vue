@@ -19,7 +19,7 @@
     <footer class="footer">
       <button class="back-button" @click="goHome">回首頁</button>
     </footer>
-    <audio ref="audioPlayer" src="https://s19.aconvert.com/convert/p3r68-cdx67/743tt-7mkpc.mp3" autoplay></audio>
+    <audio ref="audioPlayer" src="/scan_barcode_sound.mp3" autoplay></audio>
   </div>
 </template>
 

@@ -25,17 +25,17 @@
             <span>應繳金額 <br>Amount Due</span>
           </div>
           <div class="table-body">
-            <div class="table-row" v-for="(item, index) in paymentItems" :key="index">
+            <div class="table-row" v-for="(item, index) in paymentData.summaryItems" :key="index">
               <span>{{ item.date }}</span>
               <span>{{ item.name }}</span>
               <span>{{ item.mrn }}</span>
               <span>{{ item.clinic }}</span>
-              <span>{{ item.amount }}</span>
+              <span>{{ item.amount.toLocaleString() }}</span>
             </div>
           </div>
           <div class="table-footer">
             <span>合計金額 <br>Total expense</span>
-            <span class="total-amount">{{ totalAmount }}</span>
+            <span class="total-amount">{{ totalAmount.toLocaleString() }}</span>
           </div>
         </div>
       </div>
@@ -43,10 +43,9 @@
       <div class="right-panel">
         <div class="amount-payable">
           <span class="label">應繳金額 <br>AMOUNT PAYABLE</span>
-          <span class="amount">{{ totalAmount }}</span>
+          <span class="amount">{{ totalAmount.toLocaleString() }}</span>
         </div>
 
-        <!-- Combined View Area -->
         <div class="payment-view-area">
           <div class="card-instruction">
             <img :src="paymentImage" alt="Payment Method" class="payment-method-img"/>
@@ -54,7 +53,6 @@
             <p class="instruction-text-sub">{{ instructionText.sub }}</p>
           </div>
 
-          <!-- Action Buttons -->
           <div class="action-buttons-container" :class="{ 'processing': isProcessing }">
              <button v-if="paymentView === 'select' || paymentView === 'cash'" class="action-button cash-button" @click="handleCashAction" :disabled="isProcessing">
                 <span class="icon">$</span>
@@ -93,20 +91,43 @@ const router = useRouter();
 const countdown = ref(120);
 let timer;
 
-const paymentView = ref('select'); // 'select', 'cash', 'card', 'processing'
-const paymentMethod = ref(null); // 'cash' or 'card' - to remember the choice
+const paymentView = ref('select');
+const paymentMethod = ref(null);
 const isProcessing = ref(false);
 
+const paymentData = ref({
+  patientName: '王大明',
+  chartNumber: '984751',
+  summaryItems: [
+    { date: '2024/07/26', name: '王大明', mrn: '984751', clinic: '心臟內科', amount: 1000 },
+    { date: '2024/07/26', name: '王大明', mrn: '984751', clinic: '皮膚科', amount: 500 },
+    { date: '2024/07/26', name: '王大明', mrn: '984751', clinic: '家醫科', amount: 400 },
+    { date: '2024/07/26', name: '王大明', mrn: '984751', clinic: '耳鼻喉科', amount: 350 },
+  ],
+  detailedItems: [
+    { name: '掛號費', amount: 150 },
+    { name: '門診診察費 - 心臟內科', amount: 450 },
+    { name: '藥品費 - 心臟內科', amount: 400 },
+    { name: '門診診察費 - 皮膚科', amount: 250 },
+    { name: '藥品費 - 皮膚科', amount: 250 },
+    { name: '門診診察費 - 家醫科', amount: 200 },
+    { name: '藥品費 - 家醫科', amount: 200 },
+    { name: '門診診察費 - 耳鼻喉科', amount: 150 },
+    { name: '藥品費 - 耳鼻喉科', amount: 200 },
+  ]
+});
+
+const totalAmount = computed(() => {
+  return paymentData.value.detailedItems.reduce((sum, item) => sum + item.amount, 0);
+});
+
 const paymentImage = computed(() => {
-  // During processing, keep showing the method's image
   if (paymentView.value === 'processing') {
     if (paymentMethod.value === 'cash') return 'https://i.ibb.co/tTwXvTHs/Cash-Paying.gif';
     if (paymentMethod.value === 'card') return 'https://i.ibb.co/4ZjcJ87w/istockphoto-1330150853-612x612-Photoroom.png';
   }
-  // Standard view logic
   if (paymentView.value === 'cash') return 'https://i.ibb.co/tTwXvTHs/Cash-Paying.gif';
   if (paymentView.value === 'card') return 'https://i.ibb.co/4ZjcJ87w/istockphoto-1330150853-612x612-Photoroom.png';
-  
   return 'https://i.ibb.co/qMs91zsm/Chat-GPT-Image-2025-9-23-10-29-28.png';
 });
 
@@ -128,10 +149,7 @@ onMounted(() => {
     if (countdown.value > 0) {
       countdown.value--;
     } else {
-      clearInterval(timer);
-      if (router.currentRoute.value.path.includes('payment-details')) {
-          router.push('/kiosk');
-      }
+      goHome();
     }
   }, 1000);
 });
@@ -144,26 +162,14 @@ const resetCountdown = () => {
   countdown.value = 120;
 };
 
-const paymentItems = ref([
-  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '心臟內科', amount: 1000 },
-  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '皮膚科', amount: 500 },
-  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '家醫科', amount: 400 },
-  { date: '2024/07/26', name: '王大明', mrn: '123456', clinic: '耳鼻喉科', amount: 350 },
-]);
-
-const totalAmount = computed(() => {
-    const total = paymentItems.value.reduce((total, item) => total + item.amount, 0);
-    return total.toLocaleString();
-});
-
 const goHome = () => {
-  router.push('/kiosk');
+  router.push({ name: 'WelcomePage' });
 };
 
 const handleCashAction = () => {
   if (paymentView.value === 'select') {
     paymentView.value = 'cash';
-    paymentMethod.value = 'cash'; // Remember the choice
+    paymentMethod.value = 'cash';
   } else {
     confirmPayment();
   }
@@ -172,7 +178,7 @@ const handleCashAction = () => {
 const handleCardAction = () => {
   if (paymentView.value === 'select') {
     paymentView.value = 'card';
-    paymentMethod.value = 'card'; // Remember the choice
+    paymentMethod.value = 'card';
   } else {
     confirmPayment();
   }
@@ -180,21 +186,39 @@ const handleCardAction = () => {
 
 const cancelPayment = () => {
   if (isProcessing.value) return;
-  router.push('/kiosk'); // Navigate to the main kiosk page (As per user instruction)
+  goHome(); 
 };
 
 const confirmPayment = () => {
   isProcessing.value = true;
   paymentView.value = 'processing';
-  clearInterval(timer); // Stop countdown during processing
+  clearInterval(timer);
   setTimeout(() => {
-    router.push('/card-success');
+    // --- MODIFIED: Go to success page instead of receipt page ---
+    goToSuccessPage();
   }, 3000);
 }
+
+// --- MODIFIED: This function now targets the success page ---
+const goToSuccessPage = () => {
+  const receiptData = {
+    patientName: paymentData.value.patientName,
+    chartNumber: paymentData.value.chartNumber,
+    date: new Date().toLocaleDateString('zh-TW'),
+    receiptNumber: `TA${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}${new Date().getDate().toString().padStart(2, '0')}001`,
+    items: paymentData.value.detailedItems
+  };
+
+  router.push({
+    name: 'CardSuccessPage', // Navigate to the success page
+    state: { paymentDetails: receiptData } // Pass data to it
+  });
+};
 
 </script>
 
 <style scoped>
+/* Styles remain unchanged */
 .container {
   width: 100vw;
   height: 100vh;
@@ -325,12 +349,12 @@ const confirmPayment = () => {
   border-top-right-radius: 8px;
 }
 .table-header span {
-  font-size: 20px; /* Increased by ~10% from 18px */
+  font-size: 20px;
 }
 
 .table-row {
   border-bottom: 1px solid #e0e0e0;
-  font-size: 24px; /* Increased by 10% from 22px */
+  font-size: 24px;
 }
 
 .table-row:last-child {
@@ -348,14 +372,14 @@ const confirmPayment = () => {
   padding: 25px;
   background-color: #8db59d;
   color: white;
-  font-size: 26px; /* Increased by ~10% from 24px */
+  font-size: 26px;
   font-weight: bold;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
 
 .table-footer .total-amount {
-  font-size: 33px; /* Increased by 10% from 30px */
+  font-size: 33px;
 }
 
 .right-panel {
@@ -373,7 +397,7 @@ const confirmPayment = () => {
   align-items: center;
   width: 100%;
   justify-content: space-between;
-  flex-shrink: 0; /* Prevent shrinking */
+  flex-shrink: 0;
 }
 
 .amount-payable .label {
@@ -401,12 +425,12 @@ const confirmPayment = () => {
 
 .card-instruction {
   text-align: center;
-  margin-top: 20px; /* Add some space */
+  margin-top: 20px;
 }
 
 .payment-method-img {
-  width: 342px; /* 297px * 1.15 */
-  height: 245px; /* 213px * 1.15 */
+  width: 342px;
+  height: 245px;
   object-fit: contain;
   margin-bottom: 15px;
   border-radius: 8px;
@@ -428,7 +452,7 @@ const confirmPayment = () => {
   display: flex;
   width: 100%;
   gap: 20px;
-  margin-top: 20px; /* Add space */
+  margin-top: 20px;
 }
 
 .action-buttons-container.processing {
@@ -472,7 +496,7 @@ const confirmPayment = () => {
 }
 
 .cancel-button {
-  background-color: #d9534f; /* Red color for cancel */
+  background-color: #d9534f;
   box-shadow: 0 4px #b54541;
   flex: 1.2; 
 }
@@ -483,5 +507,4 @@ const confirmPayment = () => {
   cursor: not-allowed;
   opacity: 0.7;
 }
-
 </style>

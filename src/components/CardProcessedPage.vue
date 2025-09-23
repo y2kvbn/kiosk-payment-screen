@@ -29,7 +29,7 @@
         <p class="processed-subtext">Health insurance card progressing is Finished Please draw out health insurance card</p>
       </div>
     </main>
-    <audio ref="audioPlayer" src="https://s51.aconvert.com/convert/p3r68-cdx67/5udto-aste1.mp3" autoplay></audio>
+    <audio ref="audioPlayer" src="/card_processed_sound.mp3" autoplay></audio>
   </div>
 </template>
 

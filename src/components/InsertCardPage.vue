@@ -32,7 +32,7 @@
     <div class="footer-actions">
       <button class="btn btn-cancel" @click="goHome">❌ 取消繳費 <span class="btn-subtitle">CANCEL</span></button>
     </div>
-    <audio ref="audioPlayer" src="https://s19.aconvert.com/convert/p3r68-cdx67/sjwgt-hfobx.mp3" autoplay></audio>
+    <audio ref="audioPlayer" src="/insert_card_sound.mp3" autoplay></audio>
   </div>
 </template>
 
