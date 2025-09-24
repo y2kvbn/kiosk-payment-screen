@@ -1,18 +1,22 @@
 <template>
-  <div class="container">
+  <div class="page-container">
     <header class="header">
-      <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" class="header-logo">
-      <div class="steps">
-        <div class="step"><span>1</span> 確認繳費項目 <span class="subtitle">PAYMENT INFOMATION</span></div>
-        <div class="step active"><span>2</span> 繳費資訊 <span class="subtitle">PAYMENT INFOMATION</span></div>
+      <div class="logo-container">
+        <img src="https://i.ibb.co/tTrdQpY1/logo2.png" alt="Logo" class="logo-img">
+        <span class="logo-text">臺安醫院雙十分院 <br> Tai-An Hospital Shuang Shi Branch</span>
       </div>
-      <div class="header-right">
-        <div class="countdown" @click="resetCountdown">剩餘秒數：{{ countdown }}</div>
-        <button class="home-button" @click="goHome">
-          <span class="icon">🏠</span> 首頁
-        </button>
+      <div class="countdown-container">
+        自動回首頁：<span class="seconds">{{ countdown }}</span>
       </div>
     </header>
+
+    <div class="info-bar">
+        <span class="info-icon">💳</span>
+        <div class="info-text">
+            <div class="info-title">繳費資訊</div>
+            <div class="info-subtitle">Payment Information</div>
+        </div>
+    </div>
 
     <main class="main-content">
       <div class="left-panel">
@@ -144,6 +148,10 @@ const instructionText = computed(() => {
   }
 });
 
+const resetCountdown = () => {
+  countdown.value = 120;
+};
+
 onMounted(() => {
   timer = setInterval(() => {
     if (countdown.value > 0) {
@@ -152,18 +160,16 @@ onMounted(() => {
       goHome();
     }
   }, 1000);
+  window.addEventListener('click', resetCountdown);
 });
 
 onUnmounted(() => {
   clearInterval(timer);
+  window.removeEventListener('click', resetCountdown);
 });
 
-const resetCountdown = () => {
-  countdown.value = 120;
-};
-
 const goHome = () => {
-  router.push({ name: 'WelcomePage' });
+  router.push('/kiosk');
 };
 
 const handleCashAction = () => {
@@ -186,129 +192,105 @@ const handleCardAction = () => {
 
 const cancelPayment = () => {
   if (isProcessing.value) return;
-  goHome(); 
+  paymentView.value = 'select';
+  paymentMethod.value = null;
 };
 
 const confirmPayment = () => {
   isProcessing.value = true;
   paymentView.value = 'processing';
   clearInterval(timer);
+  window.removeEventListener('click', resetCountdown); // Stop resetting during processing
+
   setTimeout(() => {
-    // --- MODIFIED: Go to success page instead of receipt page ---
-    goToSuccessPage();
+    router.push({
+      name: 'PaymentReceivedPage',
+      state: { 
+        paymentDetails: JSON.parse(JSON.stringify(paymentData.value)),
+        paymentMethod: paymentMethod.value
+      }
+    });
   }, 3000);
 }
-
-// --- MODIFIED: This function now targets the success page ---
-const goToSuccessPage = () => {
-  const receiptData = {
-    patientName: paymentData.value.patientName,
-    chartNumber: paymentData.value.chartNumber,
-    date: new Date().toLocaleDateString('zh-TW'),
-    receiptNumber: `TA${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}${new Date().getDate().toString().padStart(2, '0')}001`,
-    items: paymentData.value.detailedItems
-  };
-
-  router.push({
-    name: 'CardSuccessPage', // Navigate to the success page
-    state: { paymentDetails: receiptData } // Pass data to it
-  });
-};
 
 </script>
 
 <style scoped>
-/* Styles remain unchanged */
-.container {
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+
+.page-container {
   width: 100vw;
   height: 100vh;
+  background-color: #f0f4f8;
   display: flex;
   flex-direction: column;
-  background-color: #f0f0f0;
-  font-family: 'Microsoft JhengHei', sans-serif;
+  font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
 }
 
 .header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  background-color: #5a9a78;
-  color: white;
   padding: 10px 30px;
+  background-color: #fff;
+  flex-shrink: 0;
 }
 
-.header-logo {
-  height: 50px;
-  margin-right: 30px;
-}
-
-.steps {
+.logo-container {
   display: flex;
   align-items: center;
-  flex-grow: 1;
 }
 
-.step {
-  display: flex;
-  align-items: center;
-  font-size: 24px;
-  margin-right: 40px;
-  opacity: 0.7;
-}
-
-.step.active {
-  opacity: 1;
-}
-
-.step span:first-child {
-  background-color: white;
-  color: #5a9a78;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
+.logo-img {
+  height: 45px;
   margin-right: 10px;
 }
 
-.step .subtitle {
-  font-size: 14px;
-  margin-left: 8px;
-  opacity: 0.8;
+.logo-text {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.2;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-}
-
-.countdown {
-  background-color: #3e3e3e;
+.countdown-container {
+  background-color: #333;
+  color: #fff;
   padding: 8px 20px;
   border-radius: 20px;
-  font-size: 24px;
+  font-size: 1.5rem;
+}
+
+.seconds {
+  color: #ffeb3b;
   font-weight: bold;
-  color: #ffff00;
-  margin-right: 20px;
-  cursor: pointer;
 }
 
-.home-button {
-  background-color: #4c82a8;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 10px 25px;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
+.info-bar {
+    display: flex;
+    align-items: center;
+    padding: 12px 30px;
+    background-color: #66A390; /* A shade of green */
+    color: white;
 }
 
-.home-button .icon {
-  margin-right: 8px;
-  font-size: 24px;
+.info-icon {
+    font-size: 2.5em;
+    margin-right: 20px;
+}
+
+.info-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-title {
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.info-subtitle {
+    font-size: 1em;
+    opacity: 0.9;
 }
 
 .main-content {
@@ -325,6 +307,7 @@ const goToSuccessPage = () => {
   border: 1px solid #ccc;
   border-radius: 8px;
   display: flex;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .payment-list {
@@ -343,17 +326,16 @@ const goToSuccessPage = () => {
 }
 
 .table-header {
-  background-color: #e0e0e0;
+  background-color: #e9ecef;
   font-weight: bold;
+  font-size: 20px;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
-.table-header span {
-  font-size: 20px;
-}
+
 
 .table-row {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #dee2e6;
   font-size: 24px;
 }
 
@@ -363,6 +345,7 @@ const goToSuccessPage = () => {
 
 .table-body {
   flex-grow: 1;
+  overflow-y: auto;
 }
 
 .table-footer {
@@ -390,6 +373,7 @@ const goToSuccessPage = () => {
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .amount-payable {
@@ -398,6 +382,9 @@ const goToSuccessPage = () => {
   width: 100%;
   justify-content: space-between;
   flex-shrink: 0;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .amount-payable .label {
@@ -474,6 +461,7 @@ const goToSuccessPage = () => {
   gap: 15px;
   line-height: 1.2;
   transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .action-button .icon {
@@ -487,24 +475,33 @@ const goToSuccessPage = () => {
 
 .cash-button {
   background-color: #f0ad4e;
-  box-shadow: 0 4px #c28b3d;
 }
 
 .card-button {
   background-color: #4267b2;
-  box-shadow: 0 4px #35538f;
 }
 
 .cancel-button {
   background-color: #d9534f;
-  box-shadow: 0 4px #b54541;
-  flex: 1.2; 
+  flex: 1.2;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+}
+
+.action-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
 }
 
 .action-button:disabled {
   background-color: #9a9a9a;
-  box-shadow: 0 4px #7b7b7b;
   cursor: not-allowed;
   opacity: 0.7;
+  transform: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
+
 </style>

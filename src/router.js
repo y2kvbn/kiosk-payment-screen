@@ -6,11 +6,11 @@ import ScanBarcodePage from './components/ScanBarcodePage.vue';
 import InsertCardPage from './components/InsertCardPage.vue';
 import ReadingCardPage from './components/ReadingCardPage.vue';
 import CardProcessedPage from './components/CardProcessedPage.vue';
-import CardSuccessPage from './components/CardSuccessPage.vue';
 import PaymentDetailsPage from './components/PaymentDetailsPage.vue';
 import PaymentPage from './components/PaymentPage.vue';
 import ReceiptPage from './components/ReceiptPage.vue';
 import PaymentChoicePage from './components/PaymentChoicePage.vue';
+import PaymentReceivedPage from './components/PaymentReceivedPage.vue';
 
 // --- Global Timer Cleaner ---
 // This is a robust solution to prevent timers from one page affecting another.
@@ -66,11 +66,11 @@ const routes = [
   { path: '/insert-card', name: 'InsertCardPage', component: InsertCardPage },
   { path: '/reading-card', name: 'ReadingCardPage', component: ReadingCardPage },
   { path: '/card-processed', name: 'CardProcessedPage', component: CardProcessedPage },
-  { path: '/card-success', name: 'CardSuccessPage', component: CardSuccessPage },
   { path: '/payment-details', name: 'PaymentDetailsPage', component: PaymentDetailsPage },
   { path: '/payment', name: 'PaymentPage', component: PaymentPage },
   { path: '/receipt', name: 'ReceiptPage', component: ReceiptPage },
   { path: '/payment-choice', name: 'PaymentChoicePage', component: PaymentChoicePage },
+  { path: '/payment-received', name: 'PaymentReceivedPage', component: PaymentReceivedPage },
 ];
 
 const router = createRouter({

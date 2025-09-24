@@ -52,12 +52,7 @@ const goHome = () => {
 let countdownTimer;
 onMounted(() => {
   if (audioPlayer.value) {
-    audioPlayer.value.play().catch(error => {
-      console.log("語音自動播放被瀏覽器阻擋: ", error);
-    });
-    audioPlayer.value.addEventListener('error', (e) => {
-      console.error('語音檔案載入失敗:', e);
-    });
+    audioPlayer.value.play();
   }
 
   countdownTimer = setInterval(() => {
