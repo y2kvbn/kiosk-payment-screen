@@ -114,7 +114,7 @@ onUnmounted(() => {
   width: 100vw;
   height: 100vh;
   font-family: "Microsoft JhengHei", sans-serif;
-  background-image: url('https://i.ibb.co/QFVmVBhj/694578.jpg');
+  background-image: url('https://i.ibb.co/Dsp8T4v/694578.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

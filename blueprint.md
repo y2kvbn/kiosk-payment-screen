@@ -52,19 +52,11 @@
 
 ## 最近的修改計畫
 
-### 1. 修正倒數計時器並新增互動功能
+### 1. 更新背景圖片網址
 
-*   **目標**: 修正 `PaymentDetailsPage.vue` 的倒數計時器樣式，並新增點擊重置功能。
+*   **目標**: 更新整個應用程式中使用到的背景圖片網址。
+*   **原因**: 舊的圖片連結已失效，需要替換為新的有效連結以確保背景正常顯示。
 *   **步驟**:
-    *   將 `CardProcessedPage.vue` 的倒數計時器 CSS 樣式應用到 `PaymentDetailsPage.vue`。
-    *   在 `PaymentDetailsPage.vue` 中加入全域點擊事件監聽器，當使用者點擊頁面時，重置 120 秒的倒數計時器。
-    *   確保在元件卸載或付款處理中移除監聽器，以避免不必要的行為。
-
-### 2. 移除多餘的語音錯誤處理程式碼
-
-*   **目標**: 清理專案程式碼，移除不再需要的語音載入失敗錯誤處理邏輯。
-*   **步驟**:
-    *   **`InsertCardPage.vue`**: 移除了 `onMounted` hook 中的 `.catch()` 和 `addEventListener('error', ...)` 程式碼。
-    *   **`CardProcessedPage.vue`**: 同樣移除了 `onMounted` hook 中的語音錯誤處理程式碼。
-    *   **`ScanBarcodePage.vue`**: 同樣移除了 `onMounted` hook 中的語音錯誤處理程式碼。
-*   **結果**: 讓相關元件的程式碼更加簡潔。
+    *   在 `src/components/WelcomePage.vue` 中，將 `background-image` 的 `url` 從 `'https://i.ibb.co/QFVmVBhj/694578.jpg'` 更新為 `'https://i.ibb.co/Dsp8T4v/694578.jpg'`。
+    *   在 `src/components/KioskPage.vue` 中，執行相同的替換。
+*   **結果**: 應用程式的歡迎頁面和主選單頁面現在會顯示新的背景圖片。

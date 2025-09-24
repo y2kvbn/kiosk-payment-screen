@@ -54,7 +54,7 @@ const startLoading = () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-image: url('https://i.ibb.co/QFVmVBhj/694578.jpg');
+  background-image: url('https://i.ibb.co/Dsp8T4v/694578.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
