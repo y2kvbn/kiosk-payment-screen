@@ -11,7 +11,7 @@
     </header>
 
     <div class="info-bar">
-        <span class="info-icon">💳</span>
+        <img src="/payment_icon.png" alt="Payment Icon" class="info-icon">
         <div class="info-text">
             <div class="info-title">繳費資訊</div>
             <div class="info-subtitle">Payment Information</div>
@@ -274,8 +274,10 @@ const confirmPayment = () => {
 }
 
 .info-icon {
-    font-size: 2.5em;
+    height: 50px;
+    width: 50px;
     margin-right: 20px;
+    object-fit: contain;
 }
 
 .info-text {
